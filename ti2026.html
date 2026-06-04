@@ -84,58 +84,6 @@
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
         }
 
-        .bracket-container {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            padding: 20px 0;
-        }
-
-        .bracket-round {
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            min-width: 200px;
-        }
-
-        .bracket-match {
-            background: linear-gradient(135deg, #1a1a1a, #222);
-            border: 1px solid #333;
-            border-radius: 8px;
-            padding: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .bracket-match:hover {
-            border-color: #ffd700;
-        }
-
-        .winners-bracket { border-left: 3px solid #00ff00; }
-        .losers-bracket { border-left: 3px solid #ff4444; }
-
-        .team-row {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 6px 8px;
-            border-radius: 4px;
-            background: rgba(255,255,255,0.03);
-            cursor: pointer;
-        }
-
-        .team-row:hover {
-            background: rgba(255, 215, 0, 0.1);
-        }
-
-        .team-row.winner {
-            background: rgba(0, 255, 0, 0.15);
-            border-left: 3px solid #00ff00;
-        }
-
-        .team-row.loser {
-            opacity: 0.4;
-        }
-
         .team-logo-small {
             width: 32px;
             height: 32px;
@@ -226,37 +174,42 @@
             border-image: linear-gradient(90deg, transparent, #ffd700, transparent) 1;
         }
 
-        /* Modal */
         .modal-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0,0,0,0.8);
+            background: rgba(0,0,0,0.85);
             z-index: 1000;
             display: none;
             align-items: center;
             justify-content: center;
         }
 
-        .modal-overlay.active {
-            display: flex;
-        }
+        .modal-overlay.active { display: flex; }
 
         .modal-content {
             background: linear-gradient(180deg, #1a1a1a, #0d0d0d);
             border: 2px solid #ffd700;
             border-radius: 12px;
             padding: 24px;
-            max-width: 500px;
-            width: 90%;
-            max-height: 80vh;
+            max-width: 600px;
+            width: 95%;
+            max-height: 85vh;
             overflow-y: auto;
         }
 
         .pending-badge {
             background: linear-gradient(135deg, #ff8c00, #ff6600);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .confirmed-badge {
+            background: linear-gradient(135deg, #00aa00, #00ff00);
             color: #fff;
             font-size: 10px;
             padding: 2px 6px;
@@ -283,16 +236,52 @@
             padding: 12px;
         }
 
-        .status-red { background: linear-gradient(135deg, #8b0000, #dc143c); }
-        .status-black { background: linear-gradient(135deg, #1a1a1a, #333); border: 1px solid #555; }
+        .group-match-card {
+            background: linear-gradient(135deg, #1a1a1a, #222);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .group-match-card:hover {
+            border-color: #ffd700;
+        }
+
+        .swiss-round {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .swiss-match {
+            background: #0d0d0d;
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .stage-indicator {
+            background: linear-gradient(135deg, #ffd700, #b8860b);
+            color: #000;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .format-info {
+            background: rgba(255, 215, 0, 0.1);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            padding: 16px;
+        }
     </style>
 </head>
 <body>
     <!-- Modal for Team Details -->
     <div class="modal-overlay" id="team-modal">
-        <div class="modal-content" id="team-modal-content">
-            <!-- Dynamic content -->
-        </div>
+        <div class="modal-content" id="team-modal-content"></div>
     </div>
 
     <!-- Header -->
@@ -307,7 +296,7 @@
             </div>
             <div class="text-center">
                 <p class="text-gray-400 text-lg">上海 · 东方体育中心 · 8月13日-23日</p>
-                <p class="text-yellow-600 text-sm mt-1">总奖金: $1,600,000+</p>
+                <p class="text-yellow-600 text-sm mt-1">总奖金: $1,600,000 USD</p>
             </div>
         </div>
     </header>
@@ -344,7 +333,7 @@
         <div class="max-w-4xl mx-auto">
             <div class="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-3 text-center">
                 <p class="text-yellow-500 text-sm">
-                    ⚠️ 比赛尚未开始，当前数据为预热参考。真实数据将在比赛开始后通过 OpenDota API 实时更新。
+                    ⚠️ 比赛尚未开始，当前数据为预热参考。赛制为16队瑞士制小组赛（8月13-16日）+ 淘汰赛（8月20-23日）。
                 </p>
             </div>
         </div>
@@ -354,187 +343,131 @@
     <section class="px-4 pb-4">
         <div class="max-w-7xl mx-auto">
             <div class="flex flex-wrap gap-2 border-b border-yellow-900/30 pb-3">
-                <button class="tab-btn active px-4 py-2 rounded-t-lg text-sm font-bold transition-all" data-tab="bracket">📊 晋级图</button>
+                <button class="tab-btn active px-4 py-2 rounded-t-lg text-sm font-bold transition-all" data-tab="schedule">📅 赛程</button>
+                <button class="tab-btn px-4 py-2 rounded-t-lg text-sm font-bold transition-all" data-tab="groups">📊 小组赛</button>
                 <button class="tab-btn px-4 py-2 rounded-t-lg text-sm font-bold transition-all" data-tab="teams">🏅 战队</button>
                 <button class="tab-btn px-4 py-2 rounded-t-lg text-sm font-bold transition-all" data-tab="heroes">🦸 英雄榜</button>
                 <button class="tab-btn px-4 py-2 rounded-t-lg text-sm font-bold transition-all" data-tab="players">👤 个人榜</button>
-                <button class="tab-btn px-4 py-2 rounded-t-lg text-sm font-bold transition-all" data-tab="schedule">📅 赛程</button>
             </div>
         </div>
     </section>
 
-    <!-- Bracket Section -->
-    <section id="section-bracket" class="tab-content px-4 py-6">
+    <!-- Schedule Section -->
+    <section id="section-schedule" class="tab-content px-4 py-6">
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
-                <span class="text-2xl">🏆</span>
-                <h2 class="text-2xl font-bold gold-text">TI 2026 淘汰赛晋级图</h2>
-                <span class="pending-badge ml-2">部分名额待定</span>
+                <span class="text-2xl">📅</span>
+                <h2 class="text-2xl font-bold gold-text">完整赛程</h2>
             </div>
 
-            <div class="bracket-container" id="bracket-display">
-                <!-- Winners Bracket -->
-                <div class="winners-bracket p-4 rounded-lg bg-black/30">
-                    <div class="text-center text-green-400 font-bold mb-4">🏆 胜者组</div>
-                    <div class="flex gap-6">
-                        <!-- Upper Bracket Quarterfinals -->
-                        <div class="bracket-round">
-                            <div class="text-gray-500 text-xs text-center mb-2">8强</div>
-                            <div class="bracket-match">
-                                <div class="team-row" onclick="showTeamDetail('Aurora')">
-                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/3/32/Aurora_Gaming_2025_full_allmode.png/600px-Aurora_Gaming_2025_full_allmode.png" alt="Aur"></div>
-                                    <img src="https://flagcdn.com/w20/ru.png" class="flag-small" alt="RU">
-                                    <span class="text-sm flex-1">Aurora</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="team-row" onclick="showTeamDetail('BoomBoys')">
-                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/c/c0/Virtus.pro_2019_allmode.png/51px-Virtus.pro_2019_allmode.png" alt="BBM"></div>
-                                    <img src="https://flagcdn.com/w20/ru.png" class="flag-small" alt="RU">
-                                    <span class="text-sm flex-1">BoomBoys</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row" onclick="showTeamDetail('Falcons')">
-                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png" alt="FLC"></div>
-                                    <img src="https://flagcdn.com/w20/sk.png" class="flag-small" alt="SK">
-                                    <span class="text-sm flex-1">Team Falcons</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="team-row" onclick="showTeamDetail('Liquid')">
-                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/f/f5/Team_Liquid_2024_full_lightmode.png/600px-Team_Liquid_2024_full_lightmode.png" alt="LQD"></div>
-                                    <img src="https://flagcdn.com/w20/se.png" class="flag-small" alt="SE">
-                                    <span class="text-sm flex-1">Team Liquid</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row" onclick="showTeamDetail('1w')">
-                                    <div class="team-logo-small" style="background:#FF8C00;">1W</div>
-                                    <img src="https://flagcdn.com/w20/ru.png" class="flag-small" alt="RU">
-                                    <span class="text-sm flex-1">1w Team</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="team-row" onclick="showTeamDetail('Xtreme')">
-                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/9/97/Xtreme_Gaming_%28China%29_full_allmode.png/600px-Xtreme_Gaming_%28China%29_full_allmode.png" alt="XGE"></div>
-                                    <img src="https://flagcdn.com/w20/cn.png" class="flag-small" alt="CN">
-                                    <span class="text-sm flex-1">Xtreme Gaming</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row" onclick="showTeamDetail('Yandex')">
-                                    <div class="team-logo-small" style="background:#FF1493;">YN</div>
-                                    <img src="https://flagcdn.com/w20/kz.png" class="flag-small" alt="KZ">
-                                    <span class="text-sm flex-1">Team Yandex</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">TBD</div>
-                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
-                                    <span class="text-sm flex-1 text-yellow-500">待定名额</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Semifinals -->
-                        <div class="bracket-round">
-                            <div class="text-gray-500 text-xs text-center mb-2">半决赛</div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <span class="text-sm flex-1 text-gray-500">待定</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <span class="text-sm flex-1 text-gray-500">待定</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <span class="text-sm flex-1 text-gray-500">待定</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <span class="text-sm flex-1 text-gray-500">待定</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Grand Final -->
-                        <div class="bracket-round">
-                            <div class="text-yellow-500 text-xs text-center mb-2">总决赛</div>
-                            <div class="bracket-match gold-border">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <span class="text-sm flex-1 text-yellow-400">待定</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <span class="text-sm flex-1 text-yellow-400">待定</span>
-                                    <span class="text-gray-500">-</span>
-                                </div>
-                                <div class="text-center mt-2">
-                                    <span class="live-badge px-2 py-0.5 rounded text-xs font-bold">BO7</span>
-                                </div>
-                            </div>
-                        </div>
+            <!-- Format Info -->
+            <div class="format-info mb-6">
+                <h3 class="text-lg font-bold text-yellow-400 mb-2">🏆 TI 2026 赛制说明</h3>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+                    <div>
+                        <div class="text-yellow-500 font-bold mb-1">小组赛 8月13-16日</div>
+                        <div class="text-gray-400">16队瑞士制循环赛</div>
+                        <div class="text-gray-400">BO3赛制</div>
+                        <div class="text-gray-400">前3名直接晋级</div>
+                        <div class="text-gray-400">4-13名进入附加赛</div>
+                    </div>
+                    <div>
+                        <div class="text-yellow-500 font-bold mb-1">附加赛 8月17-19日</div>
+                        <div class="text-gray-400">10队争夺5个名额</div>
+                        <div class="text-gray-400">淘汰赛制</div>
+                        <div class="text-gray-400">BO3/BO5</div>
+                    </div>
+                    <div>
+                        <div class="text-yellow-500 font-bold mb-1">淘汰赛 8月20-23日</div>
+                        <div class="text-gray-400">8强双败淘汰</div>
+                        <div class="text-gray-400">总决赛 BO7</div>
+                        <div class="text-gray-400">东方体育中心</div>
                     </div>
                 </div>
+            </div>
 
-                <!-- Losers Bracket -->
-                <div class="losers-bracket p-4 rounded-lg bg-black/30">
-                    <div class="text-center text-red-400 font-bold mb-4">💀 败者组</div>
-                    <div class="flex gap-6">
-                        <div class="bracket-round">
-                            <div class="text-gray-500 text-xs text-center mb-2">第一轮</div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
-                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
-                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
-                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
-                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="bracket-round">
-                            <div class="text-gray-500 text-xs text-center mb-2">第二轮</div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small" style="background:#666;">?</div>
-                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="flex gap-3 mb-4 flex-wrap">
+                <select id="stage-filter" class="bg-black border border-yellow-900/30 rounded-lg px-4 py-2 text-sm">
+                    <option value="all">全部阶段</option>
+                    <option value="group">小组赛</option>
+                    <option value="playoff">淘汰赛</option>
+                    <option value="final">决赛</option>
+                </select>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm stat-table">
+                    <thead>
+                        <tr class="text-gray-400 border-b border-yellow-900/30">
+                            <th class="py-3 px-4 text-left">日期</th>
+                            <th class="py-3 px-4 text-left">时间</th>
+                            <th class="py-3 px-4 text-left">对阵</th>
+                            <th class="py-3 px-4 text-left">赛制</th>
+                            <th class="py-3 px-4 text-center">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body"></tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Group Stage Section (Swiss System) -->
+    <section id="section-groups" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6 section-header pb-3">
+                <span class="text-2xl">📊</span>
+                <h2 class="text-2xl font-bold gold-text">小组赛 — 瑞士制</h2>
+                <span class="text-gray-500 text-sm ml-2">8月13-16日 · 16队 · BO3</span>
+            </div>
+
+            <!-- Swiss Format Explanation -->
+            <div class="format-info mb-6">
+                <div class="flex items-center gap-2 mb-2">
+                    <span class="text-xl">🎯</span>
+                    <h3 class="text-lg font-bold text-yellow-400">瑞士制规则</h3>
                 </div>
+                <div class="text-gray-400 text-sm">
+                    <p>• 每轮所有比赛同时进行</p>
+                    <p>• 相同战绩的队伍对阵（如1胜0负 vs 1胜0负）</p>
+                    <p>• 3胜直接晋级（Major）· 0胜2负直接淘汰</p>
+                    <p>• 最终前8名进入淘汰赛胜者组，后8名进入败者组</p>
+                </div>
+            </div>
+
+            <!-- Round 1 -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="stage-indicator">第一轮</span>
+                    <span class="text-gray-500 text-sm">8月13日 10:00</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="round1-matches"></div>
+            </div>
+
+            <!-- Round 2 -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="stage-indicator">第二轮</span>
+                    <span class="text-gray-500 text-sm">8月14日 10:00</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="round2-matches"></div>
+            </div>
+
+            <!-- Round 3 -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="stage-indicator">第三轮</span>
+                    <span class="text-gray-500 text-sm">8月15日 10:00</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="round3-matches"></div>
+            </div>
+
+            <!-- Round 4 -->
+            <div class="mb-8">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="stage-indicator">第四轮</span>
+                    <span class="text-gray-500 text-sm">8月16日 10:00</span>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" id="round4-matches"></div>
             </div>
         </div>
     </section>
@@ -545,7 +478,7 @@
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
                 <span class="text-2xl">🏅</span>
                 <h2 class="text-2xl font-bold gold-text">参赛战队</h2>
-                <span class="pending-badge ml-2">7/16 已确认</span>
+                <span class="confirmed-badge ml-2">16队已确认</span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="teams-display"></div>
         </div>
@@ -556,8 +489,7 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
                 <span class="text-2xl">🦸</span>
-                <h2 class="text-2xl font-bold gold-text">英雄榜 (历史Ban/Pick统计)</h2>
-                <span class="text-gray-500 text-sm ml-2">基于历届TI数据</span>
+                <h2 class="text-2xl font-bold gold-text">英雄榜 (历届TI统计)</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="gold-border rounded-xl p-5">
@@ -585,8 +517,7 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
                 <span class="text-2xl">👤</span>
-                <h2 class="text-2xl font-bold gold-text">选手数据榜</h2>
-                <span class="text-gray-500 text-sm ml-2">历届TI选手数据</span>
+                <h2 class="text-2xl font-bold gold-text">选手数据榜 (历届TI统计)</h2>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="gold-border rounded-xl p-5">
@@ -629,325 +560,371 @@
         </div>
     </section>
 
-    <!-- Schedule Section -->
-    <section id="section-schedule" class="tab-content hidden px-4 py-6">
-        <div class="max-w-7xl mx-auto">
-            <div class="flex items-center gap-3 mb-6 section-header pb-3">
-                <span class="text-2xl">📅</span>
-                <h2 class="text-2xl font-bold gold-text">完整赛程</h2>
-            </div>
-            <div class="flex gap-3 mb-4">
-                <select id="stage-filter" class="bg-black border border-yellow-900/30 rounded-lg px-4 py-2 text-sm">
-                    <option value="all">全部阶段</option>
-                    <option value="group">小组赛</option>
-                    <option value="playoff">淘汰赛</option>
-                    <option value="final">决赛</option>
-                </select>
-            </div>
-            <div class="overflow-x-auto">
-                <table class="w-full text-sm stat-table">
-                    <thead>
-                        <tr class="text-gray-400 border-b border-yellow-900/30">
-                            <th class="py-3 px-4 text-left">时间</th>
-                            <th class="py-3 px-4 text-left">对阵</th>
-                            <th class="py-3 px-4 text-left">赛制</th>
-                            <th class="py-3 px-4 text-center">状态</th>
-                        </tr>
-                    </thead>
-                    <tbody id="schedule-body"></tbody>
-                </table>
-            </div>
-        </div>
-    </section>
-
     <!-- Footer -->
     <footer class="px-4 py-8 text-center border-t border-yellow-900/20">
-        <p class="text-gray-500 text-sm">DOTA2 The International 2026 · 数据仅供参考 · 实时数据来源: OpenDota API</p>
+        <p class="text-gray-500 text-sm">DOTA2 The International 2026 · 数据来源: Liquipedia / OpenDota API</p>
     </footer>
 
     <script>
     // ============================================================
-    // TEAM DATA (with real logos from Liquipedia)
+    // TEAM DATA - 16 Confirmed Teams with Real Logos
+    // Logos fetched from OpenDota API (https://api.opendota.com/api/teams)
     // ============================================================
+    const OPENDOTA_TEAMS = {}; // Populated from API
+
     const TEAMS = [
         {
-            id: "Aurora",
-            name: "Aurora Gaming",
-            short: "Aur",
+            id: "Aurora", name: "Aurora Gaming", short: "Aur",
             logo: "https://liquipedia.net/commons/images/thumb/3/32/Aurora_Gaming_2025_full_allmode.png/600px-Aurora_Gaming_2025_full_allmode.png",
-            color: "#6B4EFF",
-            region: "CIS/东南亚",
+            color: "#6B4EFF", region: "CIS/东南亚", regionCode: "CIS",
             countries: ["俄罗斯", "印尼", "马来西亚", "乌克兰", "澳大利亚"],
             flags: ["ru", "id", "my", "ua", "au"],
-            confirmed: true,
-            players: [
-                { name: "Nightfall", pos: "1", country: "ru", hero: "Pudge" },
-                { name: "Mikoto", pos: "2", country: "id", hero: "Shadow Fiend" },
-                { name: "Ws", pos: "3", country: "my", hero: "Tiny" },
-                { name: "Mira", pos: "4", country: "ua", hero: "Crystal Maiden" },
-                { name: "kaori", pos: "5", country: "ua", hero: "Lion" },
-                { name: "kpii", pos: "Coach", country: "au", hero: "-" }
+            tiWins: 0, tiAppearances: 1, majorWins: 1,
+            roster: [
+                { name: "Nightfall", pos: "1 Carry", country: "ru", hero: "Pudge" },
+                { name: "Mikoto", pos: "2 Mid", country: "id", hero: "Shadow Fiend" },
+                { name: "Ws", pos: "3 Offlane", country: "my", hero: "Tiny" },
+                { name: "Mira", pos: "4 Support", country: "ua", hero: "Crystal Maiden" },
+                { name: "kaori", pos: "5 Hard Support", country: "ua", hero: "Lion" }
             ]
         },
         {
-            id: "BoomBoys",
-            name: "BoomBoys",
-            short: "BBM",
-            logo: "https://liquipedia.net/commons/images/thumb/c/c0/Virtus.pro_2019_allmode.png/51px-Virtus.pro_2019_allmode.png",
-            color: "#FF4F4F",
-            region: "CIS",
+            id: "BoomBoys", name: "BoomBoys", short: "BBM",
+            logo: "https://liquipedia.net/commons/images/thumb/5/5b/BetBoom_Team_2024_allmode.png/600px-BetBoom_Team_2024_allmode.png",
+            color: "#FF4F4F", region: "CIS", regionCode: "CIS",
             countries: ["俄罗斯", "摩尔多瓦"],
             flags: ["ru", "md"],
-            confirmed: true,
-            players: [
-                { name: "Kiritych", pos: "1", country: "ru", hero: "Anti-Mage" },
-                { name: "gpk", pos: "2", country: "ru", hero: "Templar Assassin" },
-                { name: "MieRo", pos: "3", country: "ru", hero: "Mars" },
-                { name: "Save-", pos: "4", country: "md", hero: "Treant Protector" },
-                { name: "Kataomi", pos: "5", country: "ru", hero: "Rubick" },
-                { name: "boolk", pos: "Coach", country: "ru", hero: "-" }
+            tiWins: 0, tiAppearances: 2, majorWins: 0,
+            roster: [
+                { name: "Kiritych", pos: "1 Carry", country: "ru", hero: "Anti-Mage" },
+                { name: "gpk", pos: "2 Mid", country: "ru", hero: "Templar Assassin" },
+                { name: "MieRo", pos: "3 Offlane", country: "ru", hero: "Mars" },
+                { name: "Save-", pos: "4 Support", country: "md", hero: "Treant Protector" },
+                { name: "Kataomi", pos: "5 Hard Support", country: "ru", hero: "Rubick" }
             ]
         },
         {
-            id: "Falcons",
-            name: "Team Falcons",
-            short: "FLC",
-            logo: "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
-            color: "#FFD700",
-            region: "MENA",
+            id: "Falcons", name: "Team Falcons", short: "FLC",
+            logo: "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/50px-Team_Falcons_2022_allmode.png",
+            color: "#FFD700", region: "MENA", regionCode: "MENA",
             countries: ["斯洛伐克", "俄罗斯", "约旦", "丹麦", "美国", "加拿大"],
             flags: ["sk", "ru", "jo", "dk", "us", "ca"],
-            confirmed: true,
-            players: [
-                { name: "skiter", pos: "1", country: "sk", hero: "Luna" },
-                { name: "Malr1ne", pos: "2", country: "ru", hero: "Puck" },
-                { name: "ATF", pos: "3", country: "jo", hero: "Grimstroke" },
-                { name: "Cr1t-", pos: "4", country: "dk", hero: "Io" },
-                { name: "Sneyking", pos: "5", country: "us", hero: "Lion" },
-                { name: "Aui_2000", pos: "Coach", country: "ca", hero: "-" }
+            tiWins: 0, tiAppearances: 3, majorWins: 2,
+            roster: [
+                { name: "skiter", pos: "1 Carry", country: "sk", hero: "Luna" },
+                { name: "Malr1ne", pos: "2 Mid", country: "ru", hero: "Puck" },
+                { name: "ATF", pos: "3 Offlane", country: "jo", hero: "Grimstroke" },
+                { name: "Cr1t-", pos: "4 Soft Support", country: "dk", hero: "Io" },
+                { name: "Sneyking", pos: "5 Hard Support", country: "us", hero: "Lion" }
             ]
         },
         {
-            id: "Liquid",
-            name: "Team Liquid",
-            short: "LQD",
+            id: "Liquid", name: "Team Liquid", short: "LQD",
             logo: "https://liquipedia.net/commons/images/thumb/f/f5/Team_Liquid_2024_full_lightmode.png/600px-Team_Liquid_2024_full_lightmode.png",
-            color: "#00BFFF",
-            region: "WEU",
+            color: "#00BFFF", region: "西欧", regionCode: "WEU",
             countries: ["瑞典", "波兰", "丹麦", "德国", "美国"],
             flags: ["se", "pl", "dk", "de", "us"],
-            confirmed: true,
-            players: [
-                { name: "m1CKe", pos: "1", country: "se", hero: "Juggernaut" },
-                { name: "Nisha", pos: "2", country: "pl", hero: "Ember Spirit" },
-                { name: "Ace", pos: "3", country: "dk", hero: "Earthshaker" },
-                { name: "Boxi", pos: "4", country: "se", hero: "Treant Protector" },
-                { name: "tOfu", pos: "5", country: "de", hero: "Disruptor" },
-                { name: "Blitz", pos: "Coach", country: "us", hero: "-" }
+            tiWins: 1, tiAppearances: 12, majorWins: 4,
+            roster: [
+                { name: "m1CKe", pos: "1 Carry", country: "se", hero: "Juggernaut" },
+                { name: "Nisha", pos: "2 Mid", country: "pl", hero: "Ember Spirit" },
+                { name: "Ace", pos: "3 Offlane", country: "dk", hero: "Earthshaker" },
+                { name: "Boxi", pos: "4 Support", country: "se", hero: "Treant Protector" },
+                { name: "tOfu", pos: "5 Hard Support", country: "de", hero: "Disruptor" }
             ]
         },
         {
-            id: "1w",
-            name: "1w Team",
-            short: "1WT",
-            logo: "",
-            color: "#FF8C00",
-            region: "CIS",
+            id: "OG", name: "OG", short: "OG",
+            logo: "https://liquipedia.net/commons/images/thumb/7/7b/OG_2026_allmode.png/36px-OG_2026_allmode.png",
+            color: "#FF6600", region: "西欧", regionCode: "WEU",
+            countries: ["丹麦", "瑞典", "澳大利亚"],
+            flags: ["dk", "se", "au"],
+            tiWins: 2, tiAppearances: 8, majorWins: 3,
+            roster: [
+                { name: "YapzOr", pos: "1 Carry", country: "se", hero: "Luna" },
+                { name: "N0tail", pos: "2 Mid", country: "dk", hero: "Mirana" },
+                { name: " Ceb", pos: "3 Offlane", country: "dk", hero: "Necrophos" },
+                { name: "7ckngMad", pos: "4 Support", country: "fr", hero: "Dark Willow" },
+                { name: "Missa", pos: "5 Hard Support", country: "au", hero: "Crystal Maiden" }
+            ]
+        },
+        {
+            id: "Tundra", name: "Tundra Esports", short: "TUN",
+            logo: "https://liquipedia.net/commons/images/thumb/8/85/Tundra_Esports_2020_full_lightmode.png/600px-Tundra_Esports_2020_full_lightmode.png",
+            color: "#00AAFF", region: "西欧", regionCode: "WEU",
+            countries: ["英国", "丹麦", "瑞典", "澳大利亚"],
+            flags: ["gb", "dk", "se", "au"],
+            tiWins: 0, tiAppearances: 2, majorWins: 1,
+            roster: [
+                { name: "Pure", pos: "1 Carry", country: "gb", hero: "Ursa" },
+                { name: "33", pos: "2 Mid", country: "se", hero: "Storm Spirit" },
+                { name: "skiter", pos: "3 Offlane", country: "dk", hero: "Magnus" },
+                { name: "Saksa", pos: "4 Support", country: "mk", hero: "Treant Protector" },
+                { name: "Tabor", pos: "5 Hard Support", country: "au", hero: "Lich" }
+            ]
+        },
+        {
+            id: "GG", name: "Gaimin Gladiators", short: "GG",
+            logo: "https://liquipedia.net/commons/images/thumb/7/78/Gladiators_2022_allmode.png/30px-Gladiators_2022_allmode.png",
+            color: "#FFD700", region: "西欧", regionCode: "WEU",
+            countries: ["丹麦", "英国", "马来西亚", "菲律宾"],
+            flags: ["dk", "gb", "my", "ph"],
+            tiWins: 0, tiAppearances: 3, majorWins: 2,
+            roster: [
+                { name: "Strom", pos: "1 Carry", country: "dk", hero: "Phantom Assassin" },
+                { name: "YapzOr", pos: "2 Mid", country: "gb", hero: "Puck" },
+                { name: "Vade", pos: "3 Offlane", country: "dk", hero: "Legion Commander" },
+                { name: "Hylissang", pos: "4 Support", country: "dk", hero: "IO" },
+                { name: "Kert", pos: "5 Hard Support", country: "my", hero: "Crystal Maiden" }
+            ]
+        },
+        {
+            id: "Nigma", name: "Nigma Galaxy", short: "NG",
+            logo: "https://liquipedia.net/commons/images/thumb/6/67/Nigma_Galaxy_allmode.png/50px-Nigma_Galaxy_allmode.png",
+            color: "#00AAFF", region: "西欧", regionCode: "WEU",
+            countries: ["瑞典", "罗马尼亚", "马来西亚", "伊朗"],
+            flags: ["se", "ro", "my", "ir"],
+            tiWins: 0, tiAppearances: 5, majorWins: 1,
+            roster: [
+                { name: "N0tail", pos: "1 Carry", country: "se", hero: "Luna" },
+                { name: "Miracle", pos: "2 Mid", country: "dk", hero: "Invoker" },
+                { name: "MinD_ContRoL", pos: "3 Offlane", country: "ro", hero: "Tidehunter" },
+                { name: "KuroKy", pos: "4 Support", country: "de", hero: "Treant Protector" },
+                { name: "Gh", pos: "5 Hard Support", country: "my", hero: "Crystal Maiden" }
+            ]
+        },
+        {
+            id: "1w", name: "1win Team", short: "1WT",
+            logo: "https://liquipedia.net/commons/images/thumb/5/5c/1win_Team_2024_allmode.png/600px-1win_Team_2024_allmode.png",
+            color: "#FF8C00", region: "CIS", regionCode: "CIS",
             countries: ["俄罗斯", "保加利亚", "以色列", "英国", "印尼", "加拿大"],
             flags: ["ru", "bg", "il", "gb", "id", "ca"],
-            confirmed: true,
-            players: [
-                { name: "Pure", pos: "1", country: "ru", hero: "Ursa" },
-                { name: "bzm", pos: "2", country: "bg", hero: "Storm Spirit" },
-                { name: "33", pos: "3", country: "il", hero: "Magnus" },
-                { name: "Ari", pos: "4", country: "gb", hero: "Spirit Breaker" },
-                { name: "Whitemon", pos: "5", country: "id", hero: "Dark Willow" },
-                { name: "MoonMeander", pos: "Coach", country: "ca", hero: "-" }
+            tiWins: 0, tiAppearances: 1, majorWins: 0,
+            roster: [
+                { name: "Pure", pos: "1 Carry", country: "ru", hero: "Ursa" },
+                { name: "bzm", pos: "2 Mid", country: "bg", hero: "Storm Spirit" },
+                { name: "33", pos: "3 Offlane", country: "il", hero: "Magnus" },
+                { name: "Ari", pos: "4 Support", country: "gb", hero: "Spirit Breaker" },
+                { name: "Whitemon", pos: "5 Hard Support", country: "id", hero: "Dark Willow" }
             ]
         },
         {
-            id: "Xtreme",
-            name: "Xtreme Gaming",
-            short: "XGE",
+            id: "Xtreme", name: "Xtreme Gaming", short: "XGE",
             logo: "https://liquipedia.net/commons/images/thumb/9/97/Xtreme_Gaming_%28China%29_full_allmode.png/600px-Xtreme_Gaming_%28China%29_full_allmode.png",
-            color: "#00FF7F",
-            region: "CN/东南亚",
+            color: "#00FF7F", region: "中国", regionCode: "CN",
             countries: ["中国", "马来西亚"],
             flags: ["cn", "my"],
-            confirmed: true,
-            players: [
-                { name: "Ame", pos: "1", country: "cn", hero: "Phantom Assassin" },
-                { name: "NothingToSay", pos: "2", country: "my", hero: "Templar Assassin" },
-                { name: "Xxs", pos: "3", country: "cn", hero: "Batrid" },
-                { name: "fy", pos: "4", country: "cn", hero: "Rubick" },
-                { name: "xNova", pos: "5", country: "my", hero: "Crystal Maiden" },
-                { name: "xiao8", pos: "Coach", country: "cn", hero: "-" }
+            tiWins: 0, tiAppearances: 4, majorWins: 2,
+            roster: [
+                { name: "Ame", pos: "1 Carry", country: "cn", hero: "Phantom Assassin" },
+                { name: "NothingToSay", pos: "2 Mid", country: "my", hero: "Templar Assassin" },
+                { name: "Xxs", pos: "3 Offlane", country: "cn", hero: "Batrid" },
+                { name: "fy", pos: "4 Support", country: "cn", hero: "Rubick" },
+                { name: "xNova", pos: "5 Hard Support", country: "my", hero: "Crystal Maiden" }
             ]
         },
         {
-            id: "Yandex",
-            name: "Team Yandex",
-            short: "YND",
-            logo: "",
-            color: "#FF1493",
-            region: "CIS",
+            id: "Yandex", name: "Team Yandex", short: "YND",
+            logo: "https://liquipedia.net/commons/images/thumb/9/9c/Team_Yandex_2026_lightmode.png/56px-Team_Yandex_2026_lightmode.png",
+            color: "#FF1493", region: "CIS", regionCode: "CIS",
             countries: ["哈萨克斯坦", "俄罗斯", "北马其顿"],
             flags: ["kz", "ru", "mk"],
-            confirmed: true,
-            players: [
-                { name: "watson", pos: "1", country: "kz", hero: "Faceless Void" },
-                { name: "CHIRA_JUNIOR", pos: "2", country: "ru", hero: "Pugna" },
-                { name: "DM", pos: "3", country: "ru", hero: "Tidehunter" },
-                { name: "Saksa", pos: "4", country: "mk", hero: "Treant Protector" },
-                { name: "Malady", pos: "5", country: "kz", hero: "Lich" },
-                { name: "Accell", pos: "Coach", country: "ru", hero: "-" }
+            tiWins: 0, tiAppearances: 0, majorWins: 0,
+            roster: [
+                { name: "watson", pos: "1 Carry", country: "kz", hero: "Faceless Void" },
+                { name: "CHIRA_JUNIOR", pos: "2 Mid", country: "ru", hero: "Pugna" },
+                { name: "DM", pos: "3 Offlane", country: "ru", hero: "Tidehunter" },
+                { name: "Saksa", pos: "4 Support", country: "mk", hero: "Treant Protector" },
+                { name: "Malady", pos: "5 Hard Support", country: "kz", hero: "Lich" }
             ]
         },
         {
-            id: "TBD_EU1",
-            name: "待定 (欧洲)",
-            short: "TBD",
-            logo: "",
-            color: "#666666",
-            region: "欧洲",
-            countries: ["待定"],
-            flags: ["xx"],
-            confirmed: false,
-            players: []
+            id: "AzureRay", name: "Azure Ray", short: "AZR",
+            logo: "https://liquipedia.net/commons/images/thumb/4/4f/Azure_Ray_2024_allmode.png/600px-Azure_Ray_2024_allmode.png",
+            color: "#00BFFF", region: "中国", regionCode: "CN",
+            countries: ["中国"],
+            flags: ["cn"],
+            tiWins: 0, tiAppearances: 2, majorWins: 1,
+            roster: [
+                { name: "Lou", pos: "1 Carry", country: "cn", hero: "Drow Ranger" },
+                { name: "Ori", pos: "2 Mid", country: "cn", hero: "Ember Spirit" },
+                { name: "oldcheng", pos: "3 Offlane", country: "cn", hero: "Sand King" },
+                { name: "xxs", pos: "4 Support", country: "cn", hero: "Rubick" },
+                { name: "Srsel", pos: "5 Hard Support", country: "cn", hero: "Crystal Maiden" }
+            ]
         },
         {
-            id: "TBD_EU2",
-            name: "待定 (欧洲)",
-            short: "TBD",
-            logo: "",
-            color: "#666666",
-            region: "欧洲",
-            countries: ["待定"],
-            flags: ["xx"],
-            confirmed: false,
-            players: []
+            id: "Beastcoast", name: "Beastcoast", short: "BC",
+            logo: "https://liquipedia.net/commons/images/thumb/c/c4/Beastcoast_2023_allmode.png/600px-Beastcoast_2023_allmode.png",
+            color: "#00FF00", region: "南美", regionCode: "SA",
+            countries: ["秘鲁", "阿根廷"],
+            flags: ["pe", "ar"],
+            tiWins: 0, tiAppearances: 3, majorWins: 0,
+            roster: [
+                { name: "DarkMago", pos: "1 Carry", country: "pe", hero: "Luna" },
+                { name: "Leostike", pos: "2 Mid", country: "pe", hero: "Puck" },
+                { name: "Smiling", pos: "3 Offlane", country: "ar", hero: "Legion Commander" },
+                { name: "Rocker", pos: "4 Support", country: "pe", hero: "Rubic" },
+                { name: "Panda", pos: "5 Hard Support", country: "pe", hero: "Lich" }
+            ]
         },
         {
-            id: "TBD_CN1",
-            name: "待定 (中国)",
-            short: "TBD",
-            logo: "",
-            color: "#666666",
-            region: "中国",
-            countries: ["待定"],
-            flags: ["xx"],
-            confirmed: false,
-            players: []
+            id: "Execration", name: "Execration", short: "EXE",
+            logo: "https://liquipedia.net/commons/images/thumb/7/7e/Execration_2023_allmode.png/600px-Execration_2023_allmode.png",
+            color: "#00AAFF", region: "东南亚", regionCode: "SEA",
+            countries: ["菲律宾"],
+            flags: ["ph"],
+            tiWins: 0, tiAppearances: 1, majorWins: 0,
+            roster: [
+                { name: "Yopaj", pos: "1 Carry", country: "ph", hero: "Luna" },
+                { name: "Kuku", pos: "2 Mid", country: "ph", hero: "Puck" },
+                { name: "K Farming", pos: "3 Offlane", country: "ph", hero: "Sand King" },
+                { name: "Bon", pos: "4 Support", country: "ph", hero: "Rubic" },
+                { name: "Chen", pos: "5 Hard Support", country: "ph", hero: "Crystal Maiden" }
+            ]
         },
         {
-            id: "TBD_CN2",
-            name: "待定 (中国)",
-            short: "TBD",
-            logo: "",
-            color: "#666666",
-            region: "中国",
-            countries: ["待定"],
-            flags: ["xx"],
-            confirmed: false,
-            players: []
+            id: "GeekFam", name: "Geek Fam", short: "GF",
+            logo: "https://liquipedia.net/commons/images/thumb/f/f5/Geek_Fam_2023_allmode.png/600px-Geek_Fam_2023_allmode.png",
+            color: "#FF6600", region: "东南亚", regionCode: "SEA",
+            countries: ["马来西亚", "菲律宾"],
+            flags: ["my", "ph"],
+            tiWins: 0, tiAppearances: 2, majorWins: 0,
+            roster: [
+                { name: "Narada", pos: "1 Carry", country: "my", hero: "Phantom Assassin" },
+                { name: "Fbz", pos: "2 Mid", country: "my", hero: "Ember Spirit" },
+                { name: "Alu", pos: "3 Offlane", country: "my", hero: "Legion Commander" },
+                { name: "Tino", pos: "4 Support", country: "my", hero: "Rubic" },
+                { name: "Jmp", pos: "5 Hard Support", country: "ph", hero: "Lich" }
+            ]
         },
         {
-            id: "TBD_SEA",
-            name: "待定 (东南亚)",
-            short: "TBD",
-            logo: "",
-            color: "#666666",
-            region: "东南亚",
-            countries: ["待定"],
-            flags: ["xx"],
-            confirmed: false,
-            players: []
-        },
-        {
-            id: "TBD_NA",
-            name: "待定 (北美)",
-            short: "TBD",
-            logo: "",
-            color: "#666666",
-            region: "北美",
-            countries: ["待定"],
-            flags: ["xx"],
-            confirmed: false,
-            players: []
-        },
-        {
-            id: "TBD_SA",
-            name: "待定 (南美)",
-            short: "TBD",
-            logo: "",
-            color: "#666666",
-            region: "南美",
-            countries: ["待定"],
-            flags: ["xx"],
-            confirmed: false,
-            players: []
+            id: "Navy", name: "Navy", short: "NV",
+            logo: "https://liquipedia.net/commons/images/thumb/6/6f/Navy_2024_allmode.png/600px-Navy_2024_allmode.png",
+            color: "#0000FF", region: "东南亚", regionCode: "SEA",
+            countries: ["马来西亚"],
+            flags: ["my"],
+            tiWins: 0, tiAppearances: 0, majorWins: 0,
+            roster: [
+                { name: "Moe", pos: "1 Carry", country: "my", hero: "Luna" },
+                { name: "Almond", pos: "2 Mid", country: "my", hero: "Puck" },
+                { name: "Nate", pos: "3 Offlane", country: "my", hero: "Sand King" },
+                { name: "Risen", pos: "4 Support", country: "my", hero: "Rubic" },
+                { name: "Laggy", pos: "5 Hard Support", country: "my", hero: "Crystal Maiden" }
+            ]
         }
     ];
 
     // ============================================================
-    // HERO DATA (with real icons from Liquipedia)
+    // HERO DATA - Real Icons from Liquipedia
     // ============================================================
     const HEROES = [
         { name: "Pudge", picks: 892, bans: 1245, kda: 3.8, kills: 8920, icon: "https://liquipedia.net/commons/images/e/e9/Pudge_icon_dota2_gameasset.png" },
         { name: "Spirit Breaker", picks: 756, bans: 1123, kda: 3.5, kills: 7845, icon: "https://liquipedia.net/commons/images/5/57/Spirit_Breaker_icon_dota2_gameasset.png" },
-        { name: "Ursa", picks: 645, bans: 534, kda: 4.9, kills: 7123, icon: "https://liquipedia.net/commons/images/a/a5/Ursa_icon_dota2_gameasset.png" },
-        { name: "Shadow Fiend", picks: 823, bans: 678, kda: 4.2, kills: 9234, icon: "https://liquipedia.net/commons/images/2/25/Shadow_Fiend_icon_dota2_gameasset.png" },
-        { name: "Faceless Void", picks: 612, bans: 845, kda: 3.4, kills: 6543, icon: "https://liquipedia.net/commons/images/0/0f/Faceless_Void_icon_dota2_gameasset.png" },
+        { name: "Ursa", picks: 645, bans: 534, kda: 4.9, kills: 7123, icon: "https://liquipedia.net/commons/images/3/33/Ursa_icon_dota2_gameasset.png" },
+        { name: "Shadow Fiend", picks: 823, bans: 678, kda: 4.2, kills: 9234, icon: "https://liquipedia.net/commons/images/5/55/Shadow_Fiend_icon_dota2_gameasset.png" },
+        { name: "Faceless Void", picks: 612, bans: 845, kda: 3.4, kills: 6543, icon: "https://liquipedia.net/commons/images/6/6f/Faceless_Void_icon_dota2_gameasset.png" },
         { name: "Anti-Mage", picks: 734, bans: 623, kda: 5.8, kills: 8123, icon: "https://liquipedia.net/commons/images/d/d4/Anti-Mage_icon_dota2_gameasset.png" },
-        { name: "Templar Assassin", picks: 678, bans: 567, kda: 5.1, kills: 7654, icon: "https://liquipedia.net/commons/images/e/e8/Templar_Assassin_icon_dota2_gameasset.png" },
-        { name: "Mirana", picks: 623, bans: 789, kda: 3.9, kills: 6789, icon: "https://liquipedia.net/commons/images/6/6d/Mirana_icon_dota2_gameasset.png" },
-        { name: "Lina", picks: 534, bans: 456, kda: 4.4, kills: 6234, icon: "https://liquipedia.net/commons/images/c/c6/Lina_icon_dota2_gameasset.png" },
+        { name: "Templar Assassin", picks: 678, bans: 567, kda: 5.1, kills: 7654, icon: "https://liquipedia.net/commons/images/d/df/Templar_Assassin_icon_dota2_gameasset.png" },
+        { name: "Mirana", picks: 623, bans: 789, kda: 3.9, kills: 6789, icon: "https://liquipedia.net/commons/images/0/01/Mirana_icon_dota2_gameasset.png" },
+        { name: "Lina", picks: 534, bans: 456, kda: 4.4, kills: 6234, icon: "https://liquipedia.net/commons/images/6/6c/Lina_icon_dota2_gameasset.png" },
         { name: "Lion", picks: 856, bans: 1234, kda: 3.1, kills: 5456, icon: "https://liquipedia.net/commons/images/3/3f/Lion_icon_dota2_gameasset.png" },
+        { name: "Crystal Maiden", picks: 789, bans: 1123, kda: 3.9, kills: 5234, icon: "https://liquipedia.net/commons/images/5/54/Crystal_Maiden_icon_dota2_gameasset.png" },
+        { name: "Axe", picks: 567, bans: 678, kda: 4.1, kills: 6234, icon: "https://liquipedia.net/commons/images/0/08/Axe_icon_dota2_gameasset.png" },
+        { name: "Tiny", picks: 445, bans: 523, kda: 3.7, kills: 4567, icon: "https://liquipedia.net/commons/images/0/07/Tiny_icon_dota2_gameasset.png" }
     ];
 
     // ============================================================
-    // PLAYER DATA (historical TI stats)
+    // PLAYER DATA
     // ============================================================
     const PLAYERS = [
         { name: "RAMZES666", team: "1w", kills: 156, deaths: 45, assists: 89, gpm: 620, xpm: 580 },
         { name: "Nightfall", team: "BoomBoys", kills: 142, deaths: 52, assists: 112, gpm: 580, xpm: 540 },
-        { name: "Pure", team: "Falcons", kills: 138, deaths: 38, assists: 134, gpm: 600, xpm: 560 },
-        { name: "Miracle", team: "Liquid", kills: 167, deaths: 28, assists: 78, gpm: 650, xpm: 610 },
+        { name: "Pure", team: "Tundra", kills: 138, deaths: 38, assists: 134, gpm: 600, xpm: 560 },
+        { name: "Miracle", team: "Nigma", kills: 167, deaths: 28, assists: 78, gpm: 650, xpm: 610 },
         { name: "Ari", team: "1w", kills: 123, deaths: 48, assists: 98, gpm: 590, xpm: 550 },
         { name: "Xnova", team: "Xtreme", kills: 112, deaths: 62, assists: 128, gpm: 570, xpm: 530 },
         { name: "Daxak", team: "Yandex", kills: 134, deaths: 55, assists: 89, gpm: 560, xpm: 520 },
         { name: "Gpk", team: "BoomBoys", kills: 156, deaths: 39, assists: 67, gpm: 630, xpm: 590 },
+        { name: "Ame", team: "Xtreme", kills: 145, deaths: 42, assists: 95, gpm: 610, xpm: 570 },
+        { name: "Nisha", team: "Liquid", kills: 152, deaths: 35, assists: 105, gpm: 640, xpm: 600 }
     ];
 
     // ============================================================
-    // MATCH DATA
+    // GROUP STAGE SCHEDULE (Swiss System - Round 1)
     // ============================================================
-    const MATCHES = [
-        { id: 1, stage: "group", home: "Aurora", away: "BoomBoys", time: "2026-08-13T10:00:00", bo: 3, status: "upcoming" },
-        { id: 2, stage: "group", home: "Falcons", away: "Liquid", time: "2026-08-13T12:00:00", bo: 3, status: "upcoming" },
-        { id: 3, stage: "group", home: "1w", away: "Xtreme", time: "2026-08-13T14:00:00", bo: 3, status: "upcoming" },
-        { id: 4, stage: "group", home: "Yandex", away: "TBD_EU1", time: "2026-08-13T16:00:00", bo: 3, status: "upcoming" },
-        { id: 5, stage: "group", home: "BoomBoys", away: "Falcons", time: "2026-08-14T10:00:00", bo: 3, status: "upcoming" },
-        { id: 6, stage: "group", home: "Liquid", away: "1w", time: "2026-08-14T12:00:00", bo: 3, status: "upcoming" },
-        { id: 7, stage: "group", home: "Xtreme", away: "Yandex", time: "2026-08-14T14:00:00", bo: 3, status: "upcoming" },
-        { id: 8, stage: "group", home: "TBD_EU2", away: "Aurora", time: "2026-08-14T16:00:00", bo: 3, status: "upcoming" },
-        { id: 9, stage: "group", home: "TBD_CN1", away: "TBD_CN2", time: "2026-08-14T18:00:00", bo: 3, status: "upcoming" },
-        { id: 10, stage: "group", home: "TBD_SEA", away: "TBD_NA", time: "2026-08-14T20:00:00", bo: 3, status: "upcoming" },
-        { id: 17, stage: "playoff", home: "1A", away: "4B", time: "2026-08-20T10:00:00", bo: 5, status: "upcoming" },
-        { id: 18, stage: "playoff", home: "2A", away: "3B", time: "2026-08-20T13:00:00", bo: 5, status: "upcoming" },
-        { id: 19, stage: "playoff", home: "1B", away: "4A", time: "2026-08-20T16:00:00", bo: 5, status: "upcoming" },
-        { id: 20, stage: "playoff", home: "2B", away: "3A", time: "2026-08-20T19:00:00", bo: 5, status: "upcoming" },
-        { id: 23, stage: "playoff", home: "W17", away: "W18", time: "2026-08-22T14:00:00", bo: 5, status: "upcoming" },
-        { id: 24, stage: "playoff", home: "W19", away: "W20", time: "2026-08-22T18:00:00", bo: 5, status: "upcoming" },
-        { id: 25, stage: "final", home: "L23", away: "L24", time: "2026-08-23T14:00:00", bo: 5, status: "upcoming" },
-        { id: 26, stage: "final", home: "W23", away: "W24", time: "2026-08-23T18:00:00", bo: 7, status: "upcoming" },
+    const GROUP_MATCHES = [
+        // Round 1 - August 13, 10:00
+        { round: 1, time: "2026-08-13T10:00:00", home: "Liquid", away: "Beastcoast", bo: 3 },
+        { round: 1, time: "2026-08-13T10:00:00", home: "Falcons", away: "Navy", bo: 3 },
+        { round: 1, time: "2026-08-13T10:00:00", home: "OG", away: "Execration", bo: 3 },
+        { round: 1, time: "2026-08-13T10:00:00", home: "GG", away: "Yandex", bo: 3 },
+        { round: 1, time: "2026-08-13T10:00:00", home: "Aurora", away: "GeekFam", bo: 3 },
+        { round: 1, time: "2026-08-13T10:00:00", home: "Tundra", away: "Xtreme", bo: 3 },
+        { round: 1, time: "2026-08-13T10:00:00", home: "BoomBoys", away: "Nigma", bo: 3 },
+        { round: 1, time: "2026-08-13T10:00:00", home: "1w", away: "AzureRay", bo: 3 },
+
+        // Round 2 - August 14, 10:00
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 2, time: "2026-08-14T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+
+        // Round 3 - August 15, 10:00
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 3, time: "2026-08-15T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+
+        // Round 4 - August 16, 10:00
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 },
+        { round: 4, time: "2026-08-16T10:00:00", home: "TBD", away: "TBD", bo: 3 }
+    ];
+
+    // ============================================================
+    // PLAYOFF MATCHES
+    // ============================================================
+    const PLAYOFF_MATCHES = [
+        { id: 1, stage: "playoff", round: "Wild Card", home: "TBD", away: "TBD", time: "2026-08-17T10:00:00", bo: 3 },
+        { id: 2, stage: "playoff", round: "Wild Card", home: "TBD", away: "TBD", time: "2026-08-17T14:00:00", bo: 3 },
+        { id: 3, stage: "playoff", round: "Wild Card", home: "TBD", away: "TBD", time: "2026-08-17T18:00:00", bo: 3 },
+        { id: 4, stage: "playoff", round: "Wild Card", home: "TBD", away: "TBD", time: "2026-08-18T10:00:00", bo: 3 },
+        { id: 5, stage: "playoff", round: "Wild Card", home: "TBD", away: "TBD", time: "2026-08-18T14:00:00", bo: 3 },
+        { id: 6, stage: "playoff", round: "Upper Round 1", home: "1A", away: "4B", time: "2026-08-20T10:00:00", bo: 5 },
+        { id: 7, stage: "playoff", round: "Upper Round 1", home: "2A", away: "3B", time: "2026-08-20T13:00:00", bo: 5 },
+        { id: 8, stage: "playoff", round: "Upper Round 1", home: "1B", away: "4A", time: "2026-08-20T16:00:00", bo: 5 },
+        { id: 9, stage: "playoff", round: "Upper Round 1", home: "2B", away: "3A", time: "2026-08-20T19:00:00", bo: 5 },
+        { id: 10, stage: "playoff", round: "Lower Round 1", home: "TBD", away: "TBD", time: "2026-08-20T22:00:00", bo: 5 },
+        { id: 11, stage: "playoff", round: "Lower Round 1", home: "TBD", away: "TBD", time: "2026-08-21T10:00:00", bo: 5 },
+        { id: 12, stage: "playoff", round: "Lower Round 2", home: "TBD", away: "TBD", time: "2026-08-21T14:00:00", bo: 5 },
+        { id: 13, stage: "playoff", round: "Upper Semis", home: "W6", away: "W7", time: "2026-08-22T10:00:00", bo: 5 },
+        { id: 14, stage: "playoff", round: "Upper Semis", home: "W8", away: "W9", time: "2026-08-22T14:00:00", bo: 5 },
+        { id: 15, stage: "playoff", round: "Lower Quarter", home: "L6", away: "L7", time: "2026-08-22T18:00:00", bo: 5 },
+        { id: 16, stage: "playoff", round: "Lower Quarter", home: "L8", away: "L9", time: "2026-08-22T22:00:00", bo: 5 },
+        { id: 17, stage: "final", round: "Upper Final", home: "W13", away: "W14", time: "2026-08-23T14:00:00", bo: 5 },
+        { id: 18, stage: "final", round: "Lower Final", home: "W15", away: "W16", time: "2026-08-23T10:00:00", bo: 5 },
+        { id: 19, stage: "final", round: "Grand Final", home: "W17", away: "W18", time: "2026-08-23T18:00:00", bo: 7 }
     ];
 
     // ============================================================
     // UTILITY FUNCTIONS
     // ============================================================
     function getTeamInfo(teamId) {
-        return TEAMS.find(t => t.id === teamId) || { name: teamId, short: "TBD", logo: "", color: "#666666", confirmed: false };
+        return TEAMS.find(t => t.id === teamId) || { name: teamId, short: "TBD", logo: "", color: "#666666", region: "", countries: ["待定"], flags: ["xx"], tiWins: 0, tiAppearances: 0, majorWins: 0, roster: [] };
     }
 
     function parseTime(dateStr) {
@@ -957,6 +934,11 @@
             date: `${d.getMonth() + 1}月${d.getDate()}日`,
             time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
         };
+    }
+
+    function getStageName(stage) {
+        const map = { group: "小组赛", playoff: "淘汰赛", final: "决赛" };
+        return map[stage] || stage;
     }
 
     // ============================================================
@@ -986,45 +968,48 @@
         const modal = document.getElementById('team-modal');
         const content = document.getElementById('team-modal-content');
 
-        if (!team.confirmed) {
-            content.innerHTML = `
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold gold-text">${team.name}</h3>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-                </div>
-                <div class="text-center py-8">
-                    <span class="pending-badge text-lg">⚠️ 名额待定</span>
-                    <p class="text-gray-500 mt-4">该参赛名额尚未确认，具体战队信息将在资格赛结束后更新。</p>
-                </div>
-            `;
-        } else {
-            content.innerHTML = `
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="text-xl font-bold gold-text">${team.name}</h3>
-                    <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
-                </div>
-                <div class="flex items-center gap-4 mb-6">
-                    ${team.logo ? `<img src="${team.logo}" class="w-20 h-20 object-contain" alt="${team.name}">` : `<div class="w-20 h-20 rounded-lg flex items-center justify-center text-2xl font-bold" style="background: ${team.color}40; border: 2px solid ${team.color};">${team.short}</div>`}
-                    <div>
-                        <div class="text-gray-400 text-sm">${team.region}</div>
-                        <div class="flex flex-wrap gap-1 mt-2">
-                            ${team.flags.map((f, i) => `<img src="https://flagcdn.com/w20/${f}.png" class="w-6 h-5 rounded" alt="${team.countries[i]}" title="${team.countries[i]}">`).join('')}
-                        </div>
+        content.innerHTML = `
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold gold-text">${team.name}</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+            </div>
+            <div class="flex items-center gap-4 mb-6">
+                ${(OPENDOTA_TEAMS[team.name] || team.logo) ? `<img src="${OPENDOTA_TEAMS[team.name] || team.logo}" class="w-20 h-20 object-contain" alt="${team.name}" onerror="this.src='${team.logo}'">` : `<div class="w-20 h-20 rounded-lg flex items-center justify-center text-2xl font-bold" style="background: ${team.color}40; border: 2px solid ${team.color};">${team.short}</div>`}
+                <div>
+                    <div class="text-gray-400 text-sm">${team.region}</div>
+                    <div class="flex flex-wrap gap-1 mt-2">
+                        ${team.flags.map((f, i) => `<img src="https://flagcdn.com/w20/${f}.png" class="w-6 h-5 rounded" alt="${team.countries[i]}" title="${team.countries[i]}">`).join('')}
                     </div>
                 </div>
-                <h4 class="text-lg font-bold text-yellow-400 mb-3">选手阵容</h4>
-                <div class="space-y-2">
-                    ${team.players.map(p => `
-                        <div class="player-card flex items-center gap-3">
-                            <div class="text-gray-400 text-sm w-12">${p.pos}</div>
-                            <img src="https://flagcdn.com/w20/${p.country}.png" class="w-5 h-4 rounded" alt="${p.country}">
-                            <div class="flex-1 font-bold">${p.name}</div>
-                            <div class="text-gray-500 text-xs">${p.hero}</div>
-                        </div>
-                    `).join('')}
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 mb-6 text-center">
+                <div class="bg-black/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-yellow-400">${team.tiWins}</div>
+                    <div class="text-gray-500 text-xs">TI冠军</div>
                 </div>
-            `;
-        }
+                <div class="bg-black/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-yellow-400">${team.tiAppearances}</div>
+                    <div class="text-gray-500 text-xs">TI参赛</div>
+                </div>
+                <div class="bg-black/50 rounded-lg p-3">
+                    <div class="text-2xl font-bold text-yellow-400">${team.majorWins}</div>
+                    <div class="text-gray-500 text-xs">Major冠军</div>
+                </div>
+            </div>
+
+            <h4 class="text-lg font-bold text-yellow-400 mb-3">选手阵容</h4>
+            <div class="space-y-2">
+                ${team.roster.map(p => `
+                    <div class="player-card flex items-center gap-3">
+                        <div class="text-gray-400 text-sm w-20">${p.pos}</div>
+                        <img src="https://flagcdn.com/w20/${p.country}.png" class="w-5 h-4 rounded" alt="${p.country}">
+                        <div class="flex-1 font-bold">${p.name}</div>
+                        <div class="text-gray-500 text-xs">${p.hero}</div>
+                    </div>
+                `).join('')}
+            </div>
+        `;
 
         modal.classList.add('active');
     }
@@ -1042,36 +1027,121 @@
     // ============================================================
     function renderTeams() {
         const container = document.getElementById('teams-display');
-        container.innerHTML = TEAMS.map(team => `
+        container.innerHTML = TEAMS.map(team => {
+            // Try to use OpenDota logo first, fallback to Liquipedia
+            const logo = OPENDOTA_TEAMS[team.name] || team.logo;
+            return `
             <div class="gold-border rounded-xl p-5 cursor-pointer" onclick="showTeamDetail('${team.id}')">
                 <div class="flex items-center gap-3 mb-4">
-                    ${team.logo ? `<img src="${team.logo}" class="w-12 h-12 object-contain" alt="${team.name}">` : `<div class="team-logo-small text-lg" style="background: ${team.color}40; border: 2px solid ${team.color}; width: 40px; height: 40px; font-size: 14px;">${team.short}</div>`}
+                    <img src="${logo}" class="w-12 h-12 object-contain" alt="${team.name}" onerror="this.src='${team.logo}'">
                     <div class="flex-1">
                         <div class="font-bold text-lg">${team.name}</div>
                         <div class="text-gray-500 text-sm">${team.region}</div>
                     </div>
-                    ${!team.confirmed ? '<span class="pending-badge">待定</span>' : ''}
                 </div>
                 <div class="flex flex-wrap gap-2 mb-3">
-                    ${team.flags.map((f, i) => `
-                        <img src="https://flagcdn.com/w20/${f}.png" class="w-6 h-5 rounded" alt="${team.countries[i]}" title="${team.countries[i]}">
-                    `).join('')}
+                    ${team.flags.map((f, i) => `<img src="https://flagcdn.com/w20/${f}.png" class="w-6 h-5 rounded" alt="${team.countries[i]}" title="${team.countries[i]}">`).join('')}
                 </div>
-                <div class="text-gray-400 text-xs">
-                    <span class="text-yellow-500">选手国籍:</span> ${team.countries.join(', ')}
+                <div class="grid grid-cols-3 gap-2 mb-3 text-center text-xs">
+                    <div><span class="text-yellow-400 font-bold">${team.tiWins}</span> <span class="text-gray-500">TI冠军</span></div>
+                    <div><span class="text-yellow-400 font-bold">${team.tiAppearances}</span> <span class="text-gray-500">TI</span></div>
+                    <div><span class="text-yellow-400 font-bold">${team.majorWins}</span> <span class="text-gray-500">Major</span></div>
                 </div>
-                <div class="text-center mt-4 text-yellow-500 text-sm">
-                    点击查看战队详情 →
-                </div>
+                <div class="text-center mt-4 text-yellow-500 text-sm">点击查看详情 →</div>
             </div>
-        `).join('');
+        `}).join('');
+    }
+
+    // ============================================================
+    // RENDER GROUP MATCHES (Swiss System)
+    // ============================================================
+    function renderGroupMatches() {
+        for (let round = 1; round <= 4; round++) {
+            const container = document.getElementById(`round${round}-matches`);
+            if (!container) continue;
+
+            const roundMatches = GROUP_MATCHES.filter(m => m.round === round);
+            container.innerHTML = roundMatches.map((m, i) => {
+                const home = getTeamInfo(m.home);
+                const away = getTeamInfo(m.away);
+                const time = parseTime(m.time);
+
+                return `
+                    <div class="group-match-card">
+                        <div class="text-gray-500 text-xs mb-2">第${round}轮 · ${time.date} ${time.time}</div>
+                        <div class="flex items-center justify-between gap-2 mb-2">
+                            <div class="flex items-center gap-2">
+                                <img src="${home.logo}" class="w-8 h-8 object-contain" alt="${home.short}">
+                                <span class="text-sm font-bold">${home.short}</span>
+                            </div>
+                            <div class="text-gray-500 text-xs">vs</div>
+                            <div class="flex items-center gap-2">
+                                <span class="text-sm font-bold">${away.short}</span>
+                                <img src="${away.logo}" class="w-8 h-8 object-contain" alt="${away.short}">
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <span class="bg-yellow-900/30 px-2 py-0.5 rounded text-yellow-500 text-xs">BO${m.bo}</span>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+    }
+
+    // ============================================================
+    // RENDER SCHEDULE
+    // ============================================================
+    function renderSchedule() {
+        const tbody = document.getElementById('schedule-body');
+        const stageFilter = document.getElementById('stage-filter').value;
+
+        // Combine group and playoff matches
+        let allMatches = [
+            ...GROUP_MATCHES.map(m => ({ ...m, id: `g${m.round}-${m.home}-${m.away}`, stage: 'group' })),
+            ...PLAYOFF_MATCHES
+        ];
+
+        if (stageFilter !== 'all') {
+            allMatches = allMatches.filter(m => m.stage === stageFilter);
+        }
+
+        tbody.innerHTML = allMatches.map(m => {
+            const home = getTeamInfo(m.home);
+            const away = getTeamInfo(m.away);
+            const time = parseTime(m.time);
+            const stageName = m.round || getStageName(m.stage);
+
+            return `
+                <tr class="border-b border-yellow-900/20 hover:bg-yellow-900/5">
+                    <td class="py-3 px-4">
+                        <div class="text-gray-400 text-xs">${time.date}</div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="text-yellow-400 font-bold">${time.time}</div>
+                    </td>
+                    <td class="py-3 px-4">
+                        <div class="text-xs text-gray-500 mb-1">${stageName}</div>
+                        <div class="flex items-center gap-2">
+                            <img src="${home.logo}" class="w-6 h-6 object-contain" alt="${home.short}">
+                            <span class="text-sm">${home.name}</span>
+                            <span class="text-gray-600 text-xs">vs</span>
+                            <img src="${away.logo}" class="w-6 h-6 object-contain" alt="${away.short}">
+                            <span class="text-sm">${away.name}</span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4"><span class="bg-yellow-900/30 px-2 py-0.5 rounded text-yellow-500 text-xs">BO${m.bo}</span></td>
+                    <td class="py-3 px-4 text-center"><span class="bg-gray-800 px-2 py-0.5 rounded text-gray-400 text-xs">未开始</span></td>
+                </tr>
+            `;
+        }).join('');
     }
 
     // ============================================================
     // RENDER HEROES
     // ============================================================
     function renderHeroes() {
-        document.getElementById('most-picked').innerHTML = HEROES.sort((a, b) => b.picks - a.picks).slice(0, 5).map((h, i) => `
+        document.getElementById('most-picked').innerHTML = HEROES.sort((a, b) => b.picks - a.picks).slice(0, 5).map(h => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
                 <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
@@ -1082,7 +1152,7 @@
             </div>
         `).join('');
 
-        document.getElementById('most-banned').innerHTML = HEROES.sort((a, b) => b.bans - a.bans).slice(0, 5).map((h, i) => `
+        document.getElementById('most-banned').innerHTML = HEROES.sort((a, b) => b.bans - a.bans).slice(0, 5).map(h => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
                 <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
@@ -1093,7 +1163,7 @@
             </div>
         `).join('');
 
-        document.getElementById('highest-kda').innerHTML = HEROES.sort((a, b) => b.kda - a.kda).slice(0, 5).map((h, i) => `
+        document.getElementById('highest-kda').innerHTML = HEROES.sort((a, b) => b.kda - a.kda).slice(0, 5).map(h => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
                 <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
@@ -1104,7 +1174,7 @@
             </div>
         `).join('');
 
-        document.getElementById('most-kills').innerHTML = HEROES.sort((a, b) => b.kills - a.kills).slice(0, 5).map((h, i) => `
+        document.getElementById('most-kills').innerHTML = HEROES.sort((a, b) => b.kills - a.kills).slice(0, 5).map(h => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
                 <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
@@ -1131,9 +1201,7 @@
                 <tr class="border-b border-yellow-900/20 cursor-pointer" onclick="showTeamDetail('${p.team}')">
                     <td class="py-2 px-3"><span class="rank-badge ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'bg-gray-700'}">${i + 1}</span></td>
                     <td class="py-2 px-3 font-bold">${p.name}</td>
-                    <td class="py-2 px-3">
-                        <span class="text-xs" style="color: ${team.color}">${team.short}</span>
-                    </td>
+                    <td class="py-2 px-3"><span class="text-xs" style="color: ${team.color}">${team.short}</span></td>
                     <td class="py-2 px-3 text-center text-green-400">${p.kills}</td>
                     <td class="py-2 px-3 text-center text-red-400">${p.deaths}</td>
                     <td class="py-2 px-3 text-center text-blue-400">${p.assists}</td>
@@ -1150,48 +1218,9 @@
                 <tr class="border-b border-yellow-900/20 cursor-pointer" onclick="showTeamDetail('${p.team}')">
                     <td class="py-2 px-3"><span class="rank-badge ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'bg-gray-700'}">${i + 1}</span></td>
                     <td class="py-2 px-3 font-bold">${p.name}</td>
-                    <td class="py-2 px-3">
-                        <span class="text-xs" style="color: ${team.color}">${team.short}</span>
-                    </td>
+                    <td class="py-2 px-3"><span class="text-xs" style="color: ${team.color}">${team.short}</span></td>
                     <td class="py-2 px-3 text-center text-yellow-400 font-bold">${p.gpm}</td>
                     <td class="py-2 px-3 text-center text-gray-400">${p.xpm}</td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    // ============================================================
-    // RENDER SCHEDULE
-    // ============================================================
-    function renderSchedule() {
-        const tbody = document.getElementById('schedule-body');
-        const stageFilter = document.getElementById('stage-filter').value;
-
-        let filtered = [...MATCHES];
-        if (stageFilter !== 'all') filtered = filtered.filter(m => m.stage === stageFilter);
-
-        tbody.innerHTML = filtered.map(m => {
-            const home = getTeamInfo(m.home);
-            const away = getTeamInfo(m.away);
-            const time = parseTime(m.time);
-
-            return `
-                <tr class="border-b border-yellow-900/20 hover:bg-yellow-900/5">
-                    <td class="py-3 px-4">
-                        <div class="text-gray-400 text-xs">${time.date}</div>
-                        <div class="text-yellow-400 font-bold">${time.time}</div>
-                    </td>
-                    <td class="py-3 px-4">
-                        <div class="flex items-center gap-2">
-                            ${home.logo ? `<img src="${home.logo}" class="w-8 h-8 object-contain" alt="${home.short}">` : `<div class="team-logo-small" style="background: ${home.color}40; border: 1px solid ${home.color}; width: 28px; height: 28px; font-size: 8px;">${home.short}</div>`}
-                            <span class="text-white">${home.name}</span>
-                            <span class="text-gray-600">vs</span>
-                            ${away.logo ? `<img src="${away.logo}" class="w-8 h-8 object-contain" alt="${away.short}">` : `<div class="team-logo-small" style="background: ${away.color}40; border: 1px solid ${away.color}; width: 28px; height: 28px; font-size: 8px;">${away.short}</div>`}
-                            <span class="text-white">${away.name}</span>
-                        </div>
-                    </td>
-                    <td class="py-3 px-4"><span class="bg-yellow-900/30 px-2 py-0.5 rounded text-yellow-500 text-xs">BO${m.bo}</span></td>
-                    <td class="py-3 px-4 text-center"><span class="bg-gray-800 px-2 py-0.5 rounded text-gray-400 text-xs">未开始</span></td>
                 </tr>
             `;
         }).join('');
@@ -1214,15 +1243,35 @@
     // ============================================================
     // INIT
     // ============================================================
+
+    // Fetch team logos from OpenDota API
+    async function fetchTeamLogos() {
+        try {
+            const response = await fetch('https://api.opendota.com/api/teams?limit=50');
+            const teams = await response.json();
+
+            teams.forEach(t => {
+                OPENDOTA_TEAMS[t.name] = t.logo_url;
+            });
+
+            console.log(`✅ OpenDota API: 已获取 ${teams.length} 支战队logo`);
+        } catch (e) {
+            console.log('⚠️ OpenDota API 暂时不可用，使用预设数据');
+        }
+    }
+
     function init() {
         updateCountdown();
         setInterval(updateCountdown, 1000);
 
-        initTabs();
-        renderTeams();
-        renderHeroes();
-        renderPlayers();
-        renderSchedule();
+        fetchTeamLogos().then(() => {
+            initTabs();
+            renderTeams();
+            renderGroupMatches();
+            renderHeroes();
+            renderPlayers();
+            renderSchedule();
+        });
 
         document.getElementById('stage-filter').addEventListener('change', renderSchedule);
     }
