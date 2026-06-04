@@ -1,0 +1,1250 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 世界杯观赛看板 | FIFA World Cup USA-Canada-Mexico</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+        * { font-family: 'Noto Sans SC', 'Orbitron', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #0f1628 0%, #1a2744 40%, #0d1a2d 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 20% 20%, rgba(59, 130, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 80% 80%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 50% 50%, rgba(34, 197, 94, 0.08) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .relative { position: relative; z-index: 1; }
+
+        .gradient-text {
+            background: linear-gradient(90deg, #facc15, #f59e0b, #fb923c, #f472b6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            filter: drop-shadow(0 0 20px rgba(250, 204, 21, 0.4));
+        }
+
+        .beijing-time-box {
+            background: linear-gradient(135deg, rgba(220, 38, 38, 0.4), rgba(185, 28, 28, 0.3));
+            border: 2px solid #ef4444;
+            border-radius: 12px;
+            padding: 10px 14px;
+            box-shadow: 0 0 25px rgba(239, 68, 68, 0.4), inset 0 0 20px rgba(239, 68, 68, 0.1);
+        }
+
+        .live-indicator {
+            animation: pulse 1.2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.1); }
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.5); }
+            50% { box-shadow: 0 0 30px rgba(34, 197, 94, 0.9); }
+        }
+
+        .flag {
+            width: 28px;
+            height: 20px;
+            object-fit: contain;
+            border-radius: 2px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .focus-card {
+            background: linear-gradient(145deg, rgba(251, 191, 36, 0.12), rgba(245, 158, 11, 0.08), rgba(59, 130, 246, 0.05));
+            border: 2px solid rgba(251, 191, 36, 0.5);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .focus-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(251, 191, 36, 0.1) 0%, transparent 60%);
+            animation: rotate 10s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .focus-card:hover {
+            transform: translateY(-6px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(251, 191, 36, 0.35), 0 0 60px rgba(251, 191, 36, 0.15);
+            border-color: rgba(251, 191, 36, 0.8);
+        }
+
+        .score-display {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.4), rgba(22, 163, 74, 0.3));
+            border: 2px solid #22c55e;
+            border-radius: 12px;
+            padding: 10px 20px;
+            box-shadow: 0 0 30px rgba(34, 197, 94, 0.5);
+        }
+
+        .live-score-badge {
+            background: linear-gradient(90deg, #16a34a, #22c55e, #4ade80);
+            animation: scoreGlow 1.5s ease-in-out infinite;
+        }
+
+        @keyframes scoreGlow {
+            0%, 100% { box-shadow: 0 0 15px rgba(34, 197, 94, 0.6); }
+            50% { box-shadow: 0 0 35px rgba(34, 197, 94, 1); }
+        }
+
+        /* Bracket Styles */
+        .bracket-container {
+            overflow-x: auto;
+            padding: 20px 0;
+        }
+
+        .bracket-round {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 12px;
+            min-width: 200px;
+        }
+
+        .bracket-match {
+            background: linear-gradient(145deg, rgba(30, 41, 59, 0.9), rgba(15, 23, 42, 0.9));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .bracket-match:hover {
+            border-color: rgba(59, 130, 246, 0.8);
+            transform: scale(1.03);
+        }
+
+        .bracket-match.knockout {
+            background: linear-gradient(145deg, rgba(251, 191, 36, 0.12), rgba(245, 158, 11, 0.08));
+            border-color: rgba(251, 191, 36, 0.5);
+        }
+
+        .team-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 5px 8px;
+            border-radius: 6px;
+            transition: background 0.3s ease;
+        }
+
+        .team-row.winner {
+            background: linear-gradient(90deg, rgba(34, 197, 94, 0.25), rgba(22, 163, 74, 0.15));
+            border-left: 3px solid #22c55e;
+        }
+
+        .team-row.loser {
+            opacity: 0.4;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #1e40af, #3b82f6);
+            border-color: #60a5fa;
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(59, 130, 246, 0.2);
+        }
+
+        .standings-table th {
+            background: linear-gradient(180deg, rgba(30, 41, 59, 0.95), rgba(15, 23, 42, 0.95));
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .rank-badge {
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .rank-1 { background: linear-gradient(135deg, #fbbf24, #f59e0b); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #94a3b8, #64748b); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #a16207); color: #fff; }
+
+        ::-webkit-scrollbar { width: 10px; height: 10px; }
+        ::-webkit-scrollbar-track { background: linear-gradient(180deg, #1a2744, #0f1628); }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #3b82f6, #1e40af); border-radius: 5px; }
+
+        .trophy-icon {
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .prediction-badge {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.3), rgba(139, 92, 246, 0.2));
+            border: 1px solid rgba(168, 85, 247, 0.5);
+        }
+
+        .focus-highlight {
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.15), rgba(245, 158, 11, 0.08));
+            border-left: 4px solid #fbbf24;
+        }
+
+        .section-title {
+            background: linear-gradient(90deg, #facc15, #f59e0b);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .data-notice {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+            border: 1px solid rgba(59, 130, 246, 0.4);
+        }
+
+        .prob-bar {
+            height: 6px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .prob-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+
+        .api-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .api-status-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .api-status-dot.connected { background: #22c55e; }
+        .api-status-dot.disconnected { background: #ef4444; }
+        .api-status-dot.loading { background: #facc15; animation: pulse 1s infinite; }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <header class="relative overflow-hidden py-8 px-4" style="background: linear-gradient(135deg, rgba(30, 64, 175, 0.3), rgba(124, 58, 237, 0.2), rgba(30, 64, 175, 0.3));">
+        <div class="absolute inset-0" style="background: url('data:image/svg+xml,%3Csvg width=\'100\' height=\'100\' viewBox=\'0 0 100 100\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cpath d=\'M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z\' fill=\'%239C92AC\' fill-opacity=\'0.05\' fill-rule=\'evenodd\'/%3E%3C/svg%3E');"></div>
+        <div class="relative max-w-7xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-4 mb-3">
+                <span class="text-4xl trophy-icon">🏆</span>
+                <h1 class="text-4xl md:text-6xl font-black gradient-text" style="font-family: 'Orbitron', sans-serif; letter-spacing: 2px;">
+                    FIFA WORLD CUP 2026
+                </h1>
+                <span class="text-4xl trophy-icon">🏆</span>
+            </div>
+            <p class="text-gray-300 text-lg md:text-xl mt-2 tracking-wider">
+                <span class="text-yellow-400 font-bold">美加墨</span> 世界杯 · <span class="text-blue-400 font-bold">48</span> 支球队 · <span class="text-green-400 font-bold">104</span> 场比赛
+            </p>
+            <p class="text-gray-400 text-sm mt-1">6月11日 - 7月19日 · 北美联合举办</p>
+        </div>
+    </header>
+
+    <!-- Data Source & Status -->
+    <div class="px-4 py-3">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap items-center gap-4">
+                <div class="data-notice rounded-xl p-3 flex-1">
+                    <div class="flex items-center gap-3">
+                        <span class="text-2xl">📡</span>
+                        <div>
+                            <div class="text-blue-400 font-bold text-sm">数据来源</div>
+                            <div class="text-gray-400 text-xs">worldcup26.ir API · 实时更新</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-800/60 rounded-xl px-4 py-2">
+                    <div class="api-status">
+                        <div class="api-status-dot" id="api-status-dot"></div>
+                        <span class="text-gray-400 text-xs" id="api-status-text">连接中...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Countdown -->
+    <section class="px-4 py-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <span class="text-2xl">⚽</span>
+                <p class="text-yellow-400 text-lg font-medium">距离揭幕战 · 墨西哥 vs 加纳</p>
+                <span class="text-2xl">⚽</span>
+            </div>
+            <div class="flex justify-center gap-4 md:gap-6" id="countdown">
+                <div class="bg-gradient-to-b from-gray-800/90 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-gray-700/50 shadow-lg shadow-blue-500/10">
+                    <div class="text-4xl md:text-5xl font-bold text-yellow-400" style="font-family:'Orbitron'; text-shadow: 0 0 20px rgba(250, 204, 21, 0.5);" id="days">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">天</div>
+                </div>
+                <div class="bg-gradient-to-b from-gray-800/90 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-gray-700/50 shadow-lg shadow-blue-500/10">
+                    <div class="text-4xl md:text-5xl font-bold text-blue-400" style="font-family:'Orbitron'; text-shadow: 0 0 20px rgba(59, 130, 246, 0.5);" id="hours">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">时</div>
+                </div>
+                <div class="bg-gradient-to-b from-gray-800/90 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-gray-700/50 shadow-lg shadow-blue-500/10">
+                    <div class="text-4xl md:text-5xl font-bold text-purple-400" style="font-family:'Orbitron'; text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);" id="minutes">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">分</div>
+                </div>
+                <div class="bg-gradient-to-b from-gray-800/90 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-gray-700/50 shadow-lg shadow-green-500/10">
+                    <div class="text-4xl md:text-5xl font-bold text-green-400" style="font-family:'Orbitron'; text-shadow: 0 0 20px rgba(34, 197, 94, 0.5);" id="seconds">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">秒</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <section class="px-4 pb-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap gap-3 border-b border-gray-700/50 pb-3">
+                <button class="tab-btn active px-5 py-2.5 rounded-t-lg border border-gray-600 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="focus">
+                    <span>⭐</span> 焦点战
+                </button>
+                <button class="tab-btn px-5 py-2.5 rounded-t-lg border border-gray-600 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="bracket">
+                    <span>🎯</span> 晋级图
+                </button>
+                <button class="tab-btn px-5 py-2.5 rounded-t-lg border border-gray-600 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="standings">
+                    <span>📊</span> 小组积分榜
+                </button>
+                <button class="tab-btn px-5 py-2.5 rounded-t-lg border border-gray-600 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="stats">
+                    <span>⚽</span> 射手榜
+                </button>
+                <button class="tab-btn px-5 py-2.5 rounded-t-lg border border-gray-600 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="schedule">
+                    <span>📅</span> 完整赛程
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Focus Matches Section -->
+    <section id="section-focus" class="tab-content px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-4 h-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg shadow-yellow-500/50"></div>
+                <h2 class="text-2xl md:text-3xl font-bold section-title">焦点大战 TOP 15</h2>
+            </div>
+            <div id="focus-matches" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+                <div class="col-span-full text-center py-12 text-gray-500">
+                    <div class="text-4xl mb-3">🔄</div>
+                    <div>正在加载焦点比赛...</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Bracket Section -->
+    <section id="section-bracket" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-4 h-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full shadow-lg shadow-blue-500/50"></div>
+                <h2 class="text-2xl md:text-3xl font-bold section-title">淘汰赛晋级图</h2>
+            </div>
+            <div class="bracket-container">
+                <div class="flex gap-8 min-w-max" id="bracket-display">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Group Standings Section -->
+    <section id="section-standings" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-4 h-4 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full shadow-lg shadow-green-500/50"></div>
+                <h2 class="text-2xl md:text-3xl font-bold section-title">小组积分榜</h2>
+            </div>
+            <div class="flex flex-wrap gap-2 mb-6" id="group-tabs">
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-gray-700/50">
+                <table class="w-full standings-table text-sm">
+                    <thead>
+                        <tr class="text-gray-300 border-b border-gray-700">
+                            <th class="py-3 px-4 text-left font-bold">排名</th>
+                            <th class="py-3 px-4 text-left font-bold">球队</th>
+                            <th class="py-3 px-4 text-center font-bold">场</th>
+                            <th class="py-3 px-4 text-center font-bold text-green-400">胜</th>
+                            <th class="py-3 px-4 text-center font-bold text-gray-400">平</th>
+                            <th class="py-3 px-4 text-center font-bold text-red-400">负</th>
+                            <th class="py-3 px-4 text-center font-bold">进</th>
+                            <th class="py-3 px-4 text-center font-bold">失</th>
+                            <th class="py-3 px-4 text-center font-bold">净胜</th>
+                            <th class="py-3 px-4 text-center font-bold text-blue-400">积分</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scorers Section -->
+    <section id="section-stats" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-4 h-4 bg-gradient-to-r from-amber-400 to-yellow-500 rounded-full shadow-lg shadow-amber-500/50"></div>
+                <h2 class="text-2xl md:text-3xl font-bold section-title">射手榜 TOP 10</h2>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-gray-700/50">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-300 border-b border-gray-700 bg-gray-900/50">
+                            <th class="py-3 px-4 text-left font-bold">排名</th>
+                            <th class="py-3 px-4 text-left font-bold">球员</th>
+                            <th class="py-3 px-4 text-left font-bold">球队</th>
+                            <th class="py-3 px-4 text-center font-bold text-amber-400">进球</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scorers-body">
+                        <tr>
+                            <td colspan="4" class="py-8 text-center text-gray-500">比赛开始后实时更新</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Full Schedule Section -->
+    <section id="section-schedule" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 bg-gradient-to-r from-purple-400 to-pink-500 rounded-full shadow-lg shadow-purple-500/50"></div>
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">完整赛程</h2>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <select id="group-filter" class="bg-gradient-to-br from-gray-800 to-gray-900 border border-gray-600 rounded-xl px-4 py-2.5 text-sm font-medium">
+                        <option value="all">全部阶段</option>
+                        <option value="group">小组赛</option>
+                        <option value="r32">32强</option>
+                        <option value="r16">16强</option>
+                        <option value="qf">8强</option>
+                        <option value="sf">半决赛</option>
+                        <option value="f">决赛</option>
+                    </select>
+                    <button id="filter-focus-btn" class="px-4 py-2.5 border border-yellow-500/50 rounded-xl text-sm font-medium hover:bg-yellow-500/20 transition-all">
+                        ⭐ 仅焦点战
+                    </button>
+                </div>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-gray-700/50">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-400 border-b border-gray-800 bg-gray-900/50">
+                            <th class="py-3 px-4 text-left font-bold">#</th>
+                            <th class="py-3 px-4 text-left font-bold">北京时间</th>
+                            <th class="py-3 px-4 text-left font-bold">对阵</th>
+                            <th class="py-3 px-4 text-left font-bold">场馆</th>
+                            <th class="py-3 px-4 text-center font-bold">状态</th>
+                            <th class="py-3 px-4 text-center font-bold">比分</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Last Update Time -->
+    <div class="px-4 py-6 text-center">
+        <div class="text-gray-500 text-sm">
+            数据更新时间: <span id="last-update">-</span>
+        </div>
+    </div>
+
+    <script>
+    // ============================================================
+    // API CONFIGURATION
+    // ============================================================
+    const API_BASE = 'https://worldcup26.ir';
+
+    // ============================================================
+    // TEAM DATA (Chinese Names + Flags)
+    // ============================================================
+    const TEAM_DATA = {
+        "Mexico": { name: "墨西哥", flag: "https://flagcdn.com/w80/mx.png" },
+        "Ghana": { name: "加纳", flag: "https://flagcdn.com/w80/gh.png" },
+        "South Africa": { name: "南非", flag: "https://flagcdn.com/w80/za.png" },
+        "Norway": { name: "挪威", flag: "https://flagcdn.com/w80/no.png" },
+        "New Zealand": { name: "新西兰", flag: "https://flagcdn.com/w80/nz.png" },
+        "Argentina": { name: "阿根廷", flag: "https://flagcdn.com/w80/ar.png" },
+        "Japan": { name: "日本", flag: "https://flagcdn.com/w80/jp.png" },
+        "Senegal": { name: "塞内加尔", flag: "https://flagcdn.com/w80/sn.png" },
+        "Scotland": { name: "苏格兰", flag: "https://flagcdn.com/w80/gb.png" },
+        "Brazil": { name: "巴西", flag: "https://flagcdn.com/w80/br.png" },
+        "Morocco": { name: "摩洛哥", flag: "https://flagcdn.com/w80/ma.png" },
+        "Germany": { name: "德国", flag: "https://flagcdn.com/w80/de.png" },
+        "Algeria": { name: "阿尔及利亚", flag: "https://flagcdn.com/w80/dz.png" },
+        "North Korea": { name: "朝鲜", flag: "https://flagcdn.com/w80/kp.png" },
+        "France": { name: "法国", flag: "https://flagcdn.com/w80/fr.png" },
+        "Italy": { name: "意大利", flag: "https://flagcdn.com/w80/it.png" },
+        "Egypt": { name: "埃及", flag: "https://flagcdn.com/w80/eg.png" },
+        "Trinidad and Tobago": { name: "特立尼达", flag: "https://flagcdn.com/w80/tt.png" },
+        "England": { name: "英格兰", flag: "https://flagcdn.com/w80/gb.png" },
+        "Spain": { name: "西班牙", flag: "https://flagcdn.com/w80/es.png" },
+        "Nigeria": { name: "尼日利亚", flag: "https://flagcdn.com/w80/ng.png" },
+        "Jamaica": { name: "牙买加", flag: "https://flagcdn.com/w80/jm.png" },
+        "Portugal": { name: "葡萄牙", flag: "https://flagcdn.com/w80/pt.png" },
+        "Netherlands": { name: "荷兰", flag: "https://flagcdn.com/w80/nl.png" },
+        "Iran": { name: "伊朗", flag: "https://flagcdn.com/w80/ir.png" },
+        "Australia": { name: "澳大利亚", flag: "https://flagcdn.com/w80/au.png" },
+        "United States": { name: "美国", flag: "https://flagcdn.com/w80/us.png" },
+        "Croatia": { name: "克罗地亚", flag: "https://flagcdn.com/w80/hr.png" },
+        "Canada": { name: "加拿大", flag: "https://flagcdn.com/w80/ca.png" },
+        "Belgium": { name: "比利时", flag: "https://flagcdn.com/w80/be.png" },
+        "Uruguay": { name: "乌拉圭", flag: "https://flagcdn.com/w80/uy.png" },
+        "Poland": { name: "波兰", flag: "https://flagcdn.com/w80/pl.png" },
+        "Ecuador": { name: "厄瓜多尔", flag: "https://flagcdn.com/w80/ec.png" },
+        "Switzerland": { name: "瑞士", flag: "https://flagcdn.com/w80/ch.png" },
+        "Sweden": { name: "瑞典", flag: "https://flagcdn.com/w80/se.png" },
+        "Cameroon": { name: "喀麦隆", flag: "https://flagcdn.com/w80/cm.png" },
+        "Saudi Arabia": { name: "沙特阿拉伯", flag: "https://flagcdn.com/w80/sa.png" },
+        "Denmark": { name: "丹麦", flag: "https://flagcdn.com/w80/dk.png" },
+        "Colombia": { name: "哥伦比亚", flag: "https://flagcdn.com/w80/co.png" },
+        "Greece": { name: "希腊", flag: "https://flagcdn.com/w80/gr.png" },
+        "Chile": { name: "智利", flag: "https://flagcdn.com/w80/cl.png" },
+        "Serbia": { name: "塞尔维亚", flag: "https://flagcdn.com/w80/rs.png" },
+        "Albania": { name: "阿尔巴尼亚", flag: "https://flagcdn.com/w80/al.png" },
+        "Qatar": { name: "卡塔尔", flag: "https://flagcdn.com/w80/qa.png" },
+        "Wales": { name: "威尔士", flag: "https://flagcdn.com/w80/gb.png" },
+        "Ukraine": { name: "乌克兰", flag: "https://flagcdn.com/w80/ua.png" },
+        "Iceland": { name: "冰岛", flag: "https://flagcdn.com/w80/is.png" },
+        "Honduras": { name: "洪都拉斯", flag: "https://flagcdn.com/w80/hn.png" },
+    };
+
+    // ============================================================
+    // FOCUS MATCHES LIST (by match numbers)
+    // ============================================================
+    const FOCUS_MATCH_IDS = [1, 2, 23, 27, 29, 33, 42, 48, 55, 62, 103, 104, 106, 107, 108, 109, 110];
+
+    // ============================================================
+    // FOCUS MATCH PREDICTIONS WITH PROBABILITIES
+    // ============================================================
+    const FOCUS_PREDICTIONS = {
+        1: { homeProb: 55, drawProb: 25, awayProb: 20, reason: "东道主优势明显，加纳实力有限" },
+        2: { homeProb: 70, drawProb: 18, awayProb: 12, reason: "整体实力强于新西兰，客场作战能力强" },
+        23: { homeProb: 40, drawProb: 30, awayProb: 30, reason: "巴德世纪对决，势均力敌" },
+        27: { homeProb: 45, drawProb: 27, awayProb: 28, reason: "英西大战，三狮军团近期状态更佳" },
+        29: { homeProb: 48, drawProb: 27, awayProb: 25, reason: "葡荷对决，葡萄牙进攻火力强" },
+        33: { homeProb: 52, drawProb: 26, awayProb: 22, reason: "比乌强强对话，比利时阵容豪华" },
+        42: { homeProb: 78, drawProb: 14, awayProb: 8, reason: "德朝对决，德国实力碾压" },
+        48: { homeProb: 58, drawProb: 24, awayProb: 18, reason: "荷兰伊朗对决，橙衣军团进攻犀利" },
+        55: { homeProb: 55, drawProb: 25, awayProb: 20, reason: "丹希对决，丹麦整体占优" },
+        62: { homeProb: 50, drawProb: 27, awayProb: 23, reason: "克摩对决，上届亚军实力更强" },
+        103: { homeProb: 48, drawProb: 27, awayProb: 25, reason: "8强对决，战术博弈" },
+        104: { homeProb: 50, drawProb: 27, awayProb: 23, reason: "8强对决，进攻大战" },
+        106: { homeProb: 48, drawProb: 27, awayProb: 25, reason: "8强强强对话" },
+        107: { homeProb: 50, drawProb: 27, awayProb: 23, reason: "半决赛阶段，强队对决" },
+        108: { homeProb: 50, drawProb: 27, awayProb: 23, reason: "半决赛阶段，风格对决" },
+        109: { homeProb: 50, drawProb: 30, awayProb: 20, reason: "三四名决赛，荣誉之战" },
+        110: { homeProb: 50, drawProb: 28, awayProb: 22, reason: "世界杯决赛，巅峰对决" },
+    };
+
+    // ============================================================
+    // STATE
+    // ============================================================
+    let matchesData = [];
+    let groupsData = [];
+    let apiConnected = false;
+
+    // ============================================================
+    // STATIC FALLBACK DATA (used when API is unavailable)
+    // ============================================================
+    const STATIC_MATCHES = [
+        { id: 1, home_team_name_en: "Mexico", away_team_name_en: "South Africa", home_score: 0, away_score: 0, local_date: "06/11/2026 13:00", finished: false, type: "group", ground: "Mexico City Stadium" },
+        { id: 2, home_team_name_en: "Argentina", away_team_name_en: "Japan", home_score: 0, away_score: 0, local_date: "06/11/2026 18:00", finished: false, type: "group", ground: "New York Stadium" },
+        { id: 3, home_team_name_en: "Brazil", away_team_name_en: "North Korea", home_score: 0, away_score: 0, local_date: "06/12/2026 12:00", finished: false, type: "group", ground: "Los Angeles Stadium" },
+        { id: 4, home_team_name_en: "Germany", away_team_name_en: "Algeria", home_score: 0, away_score: 0, local_date: "06/12/2026 18:00", finished: false, type: "group", ground: "Dallas Stadium" },
+        { id: 5, home_team_name_en: "France", away_team_name_en: "Egypt", home_score: 0, away_score: 0, local_date: "06/13/2026 12:00", finished: false, type: "group", ground: "Miami Stadium" },
+        { id: 6, home_team_name_en: "England", away_team_name_en: "Nigeria", home_score: 0, away_score: 0, local_date: "06/13/2026 18:00", finished: false, type: "group", ground: "Kansas City Stadium" },
+        { id: 7, home_team_name_en: "Spain", away_team_name_en: "Jamaica", home_score: 0, away_score: 0, local_date: "06/14/2026 15:00", finished: false, type: "group", ground: "Boston Stadium" },
+        { id: 8, home_team_name_en: "Portugal", away_team_name_en: "Iran", home_score: 0, away_score: 0, local_date: "06/14/2026 18:00", finished: false, type: "group", ground: "Atlanta Stadium" },
+        { id: 23, home_team_name_en: "Brazil", away_team_name_en: "Germany", home_score: 0, away_score: 0, local_date: "06/19/2026 18:00", finished: false, type: "group", ground: "Los Angeles Stadium" },
+        { id: 27, home_team_name_en: "England", away_team_name_en: "Spain", home_score: 0, away_score: 0, local_date: "06/19/2026 18:00", finished: false, type: "group", ground: "Kansas City Stadium" },
+        { id: 29, home_team_name_en: "Portugal", away_team_name_en: "Netherlands", home_score: 0, away_score: 0, local_date: "06/20/2026 18:00", finished: false, type: "group", ground: "Atlanta Stadium" },
+        { id: 33, home_team_name_en: "Belgium", away_team_name_en: "Uruguay", home_score: 0, away_score: 0, local_date: "06/21/2026 18:00", finished: false, type: "group", ground: "New York Stadium" },
+        { id: 42, home_team_name_en: "Germany", away_team_name_en: "North Korea", home_score: 0, away_score: 0, local_date: "06/23/2026 18:00", finished: false, type: "group", ground: "Seattle Stadium" },
+        { id: 48, home_team_name_en: "Netherlands", away_team_name_en: "Iran", home_score: 0, away_score: 0, local_date: "06/24/2026 18:00", finished: false, type: "group", ground: "Houston Stadium" },
+        { id: 55, home_team_name_en: "Denmark", away_team_name_en: "Greece", home_score: 0, away_score: 0, local_date: "06/15/2026 15:00", finished: false, type: "group", ground: "Houston Stadium" },
+        { id: 62, home_team_name_en: "Croatia", away_team_name_en: "Morocco", home_score: 0, away_score: 0, local_date: "06/20/2026 18:00", finished: false, type: "group", ground: "Seattle Stadium" },
+        { id: 103, home_team_name_en: "Winner Group A", away_team_name_en: "Runner-up Group B", home_score: 0, away_score: 0, local_date: "07/10/2026 18:00", finished: false, type: "qf", ground: "New York Stadium" },
+        { id: 104, home_team_name_en: "Winner Group C", away_team_name_en: "Runner-up Group D", home_score: 0, away_score: 0, local_date: "07/10/2026 21:00", finished: false, type: "qf", ground: "Mexico City Stadium" },
+        { id: 106, home_team_name_en: "Winner Group E", away_team_name_en: "Runner-up Group F", home_score: 0, away_score: 0, local_date: "07/12/2026 18:00", finished: false, type: "qf", ground: "Seattle Stadium" },
+        { id: 107, home_team_name_en: "Winner QF 1", away_team_name_en: "Winner QF 2", home_score: 0, away_score: 0, local_date: "07/14/2026 18:00", finished: false, type: "sf", ground: "New York Stadium" },
+        { id: 108, home_team_name_en: "Winner QF 3", away_team_name_en: "Winner QF 4", home_score: 0, away_score: 0, local_date: "07/15/2026 18:00", finished: false, type: "sf", ground: "Mexico City Stadium" },
+        { id: 109, home_team_name_en: "Loser SF 1", away_team_name_en: "Loser SF 2", home_score: 0, away_score: 0, local_date: "07/18/2026 18:00", finished: false, type: "tf", ground: "Miami Stadium" },
+        { id: 110, home_team_name_en: "Winner SF 1", away_team_name_en: "Winner SF 2", home_score: 0, away_score: 0, local_date: "07/19/2026 15:00", finished: false, type: "f", ground: "New York Stadium" },
+    ];
+
+    const STATIC_GROUPS = [
+        { group: "A", teams: [
+            { name_en: "Mexico", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+            { name_en: "South Africa", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+            { name_en: "Norway", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+            { name_en: "New Zealand", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+        ]},
+        { group: "B", teams: [
+            { name_en: "Argentina", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+            { name_en: "Japan", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+            { name_en: "Senegal", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+            { name_en: "Scotland", played: 0, won: 0, drawn: 0, lost: 0, gf: 0, ga: 0, gd: 0, points: 0 },
+        ]},
+    ];
+
+    // ============================================================
+    // UTILITY FUNCTIONS
+    // ============================================================
+    function getTeamInfo(teamName) {
+        if (!teamName) return { name: "待定", flag: "https://flagcdn.com/w80/xx.png" };
+        // Handle placeholder labels like "Runner-up Group A"
+        if (teamName.includes('Runner-up') || teamName.includes('Winner') || teamName.includes('Group')) {
+            return { name: teamName, flag: "https://flagcdn.com/w80/xx.png" };
+        }
+        const data = TEAM_DATA[teamName];
+        if (data) return data;
+        return { name: teamName, flag: "https://flagcdn.com/w80/xx.png" };
+    }
+
+    function parseBeijingTime(dateStr) {
+        if (!dateStr) return { date: "", time: "" };
+        // dateStr is in format: "06/11/2026 13:00" (MM/DD/YYYY HH:mm)
+        const parts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
+        if (!parts) {
+            // Try ISO format
+            const d = new Date(dateStr);
+            if (isNaN(d.getTime())) return { date: "", time: "" };
+            const month = d.getMonth() + 1;
+            const day = d.getDate();
+            const hours = d.getHours();
+            const minutes = d.getMinutes();
+            return {
+                date: `${d.getFullYear()}年${String(month).padStart(2, '0')}月${String(day).padStart(2, '0')}日`,
+                time: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+            };
+        }
+        const [, month, day, year, hours, minutes] = parts;
+        // Add 8 hours for Beijing time
+        let hour = parseInt(hours) + 8;
+        let dayAdj = parseInt(day);
+        if (hour >= 24) {
+            hour -= 24;
+            dayAdj = parseInt(day) + 1;
+        }
+        return {
+            date: `${year}年${month}月${String(dayAdj).padStart(2, '0')}日`,
+            time: `${String(hour).padStart(2, '0')}:${minutes}`
+        };
+    }
+
+    function getRoundTypeCN(type) {
+        const map = {
+            "group": "小组赛",
+            "r32": "32强",
+            "r16": "16强",
+            "qf": "8强",
+            "sf": "半决赛",
+            "tf": "三四名",
+            "f": "决赛"
+        };
+        return map[type] || type;
+    }
+
+    function getMatchState(finished, timeElapsed) {
+        const isFinished = finished === true || finished === 'TRUE' || finished === 'true';
+        if (isFinished) return { label: "已结束", class: "bg-blue-600/80" };
+        if (timeElapsed) return { label: timeElapsed, class: "bg-green-600/80 live-indicator" };
+        return { label: "未开始", class: "bg-gray-600/80" };
+    }
+
+    // ============================================================
+    // API CALLS
+    // ============================================================
+    async function fetchData() {
+        updateApiStatus('loading', '连接中...');
+        try {
+            const [gamesRes, groupsRes] = await Promise.all([
+                fetch(`${API_BASE}/get/games`),
+                fetch(`${API_BASE}/get/groups`)
+            ]);
+
+            if (!gamesRes.ok || !groupsRes.ok) {
+                throw new Error('API request failed');
+            }
+
+            const gamesJson = await gamesRes.json();
+            const groupsJson = await groupsRes.json();
+
+            // Extract the games array from response
+            matchesData = gamesJson.games || gamesJson || [];
+            groupsData = groupsJson.groups || groupsJson || [];
+
+            apiConnected = true;
+            updateApiStatus('connected', '已连接 · ' + matchesData.length + ' 场比赛');
+
+            renderAll();
+            document.getElementById('last-update').textContent = new Date().toLocaleString('zh-CN');
+
+        } catch (error) {
+            console.error('Failed to fetch data:', error);
+            apiConnected = false;
+            updateApiStatus('disconnected', '连接失败');
+            // Show fallback schedule data
+            renderFallbackData();
+        }
+    }
+
+    function renderFallbackData() {
+        // If API fails, show static schedule with predictions
+        renderFocusMatches();
+        renderBracket();
+        renderStandings('A');
+        renderSchedule();
+        renderScorers();
+    }
+
+    function updateApiStatus(status, text) {
+        const dot = document.getElementById('api-status-dot');
+        const textEl = document.getElementById('api-status-text');
+        dot.className = `api-status-dot ${status}`;
+        textEl.textContent = text;
+    }
+
+    // ============================================================
+    // COUNTDOWN
+    // ============================================================
+    function updateCountdown() {
+        const opening = new Date('2026-06-11T19:00:00');
+        const now = new Date();
+        const diff = opening - now;
+
+        if (diff <= 0) {
+            ['days','hours','minutes','seconds'].forEach(id => document.getElementById(id).textContent = '00');
+            return;
+        }
+
+        document.getElementById('days').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+        document.getElementById('hours').textContent = String(Math.floor(diff % 86400000 / 3600000)).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(Math.floor(diff % 3600000 / 60000)).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(Math.floor(diff % 60000 / 1000)).padStart(2, '0');
+    }
+
+    // ============================================================
+    // RENDER FOCUS MATCHES
+    // ============================================================
+    function renderFocusMatches() {
+        const container = document.getElementById('focus-matches');
+
+        // Use static data if API is not connected
+        const dataSource = (apiConnected && matchesData.length > 0) ? matchesData : STATIC_MATCHES;
+
+        const focusMatches = dataSource
+            .filter(m => FOCUS_MATCH_IDS.includes(parseInt(m.id)))
+            .sort((a, b) => new Date(a.local_date) - new Date(b.local_date));
+
+        if (focusMatches.length === 0) {
+            container.innerHTML = `
+                <div class="col-span-full text-center py-12 text-gray-500">
+                    <div class="text-4xl mb-3">📅</div>
+                    <div>暂无焦点比赛数据</div>
+                </div>
+            `;
+            return;
+        }
+
+        container.innerHTML = focusMatches.map(m => {
+            const home = getTeamInfo(m.home_team_name_en || m.home_team_name_fa);
+            const away = getTeamInfo(m.away_team_name_en || m.away_team_name_fa);
+            const beijing = parseBeijingTime(m.local_date);
+            const state = getMatchState(m.finished, m.time_elapsed);
+            const prediction = FOCUS_PREDICTIONS[m.id] || { homeProb: 33, drawProb: 34, awayProb: 33, reason: "等待分析" };
+            const isLive = !m.finished && m.time_elapsed;
+
+            return `
+            <div class="focus-card rounded-2xl p-5 relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-gradient-to-r from-blue-600 to-blue-700 px-3 py-1 rounded-full text-xs font-bold shadow-lg">${getRoundTypeCN(m.type)}</span>
+                        <span class="${state.class} px-2.5 py-1 rounded-full text-xs font-bold">${state.label}</span>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-3 mb-4">
+                        <div class="text-center flex-1">
+                            <img src="${home.flag}" class="flag mx-auto mb-2 shadow-lg" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                            <div class="text-white font-bold text-sm">${home.name}</div>
+                        </div>
+                        <div class="text-center">
+                            ${m.finished || isLive ? `
+                            <div class="score-display text-center ${isLive ? 'live-score-badge' : ''}">
+                                <div class="text-white font-black text-3xl">${m.home_score} - ${m.away_score}</div>
+                                ${isLive ? '<div class="text-xs text-green-200 mt-1 font-bold">LIVE</div>' : ''}
+                            </div>
+                            ` : `
+                            <div class="beijing-time-box text-center">
+                                <div class="text-gray-400 text-xs mb-1">VS</div>
+                                <div class="text-white font-bold text-2xl">VS</div>
+                            </div>
+                            `}
+                        </div>
+                        <div class="text-center flex-1">
+                            <img src="${away.flag}" class="flag mx-auto mb-2 shadow-lg" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                            <div class="text-white font-bold text-sm">${away.name}</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-gray-900/80 to-gray-800/80 rounded-xl p-3 mb-3 border border-gray-700/30">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-white font-semibold text-sm">${beijing.date}</div>
+                                <div class="text-red-400 font-black text-xl">${beijing.time}</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-gray-400 text-xs">北京时间</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    ${!m.finished && !isLive ? `
+                    <div class="prediction-badge rounded-lg p-3 mb-3">
+                        <div class="text-gray-300 text-xs mb-2">📊 胜负预测</div>
+                        <div class="flex gap-1 mb-2">
+                            <div class="flex-1 text-center">
+                                <div class="text-green-400 font-bold text-sm">${prediction.homeProb}%</div>
+                                <div class="text-xs text-gray-400">主胜</div>
+                                <div class="prob-bar mt-1">
+                                    <div class="prob-fill bg-green-500" style="width: ${prediction.homeProb}%"></div>
+                                </div>
+                            </div>
+                            <div class="flex-1 text-center">
+                                <div class="text-gray-400 font-bold text-sm">${prediction.drawProb}%</div>
+                                <div class="text-xs text-gray-400">平局</div>
+                                <div class="prob-bar mt-1">
+                                    <div class="prob-fill bg-gray-500" style="width: ${prediction.drawProb}%"></div>
+                                </div>
+                            </div>
+                            <div class="flex-1 text-center">
+                                <div class="text-red-400 font-bold text-sm">${prediction.awayProb}%</div>
+                                <div class="text-xs text-gray-400">客胜</div>
+                                <div class="prob-bar mt-1">
+                                    <div class="prob-fill bg-red-500" style="width: ${prediction.awayProb}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-gray-400 text-xs mt-2">📝 ${prediction.reason}</div>
+                    </div>
+                    ` : ''}
+
+                    <div class="text-gray-500 text-xs text-center">
+                        ${m.ground || 'TBD'}
+                    </div>
+                </div>
+            </div>
+        `}).join('');
+    }
+
+    // ============================================================
+    // RENDER BRACKET
+    // ============================================================
+    function renderBracket() {
+        const container = document.getElementById('bracket-display');
+
+        // Use static data if API is not connected
+        const dataSource = (apiConnected && matchesData.length > 0) ? matchesData : STATIC_MATCHES;
+
+        const rounds = [
+            { name: '32强', type: 'r32' },
+            { name: '16强', type: 'r16' },
+            { name: '8强', type: 'qf' },
+            { name: '半决赛', type: 'sf' },
+            { name: '决赛', type: 'f' },
+        ];
+
+        container.innerHTML = rounds.map(round => {
+            const roundMatches = dataSource.filter(m => m.type === round.type);
+            return `
+            <div class="bracket-round">
+                <div class="text-center text-gray-300 text-sm mb-3 font-bold tracking-wider">${round.name}</div>
+                ${roundMatches.map(m => {
+                    const home = getTeamInfo(m.home_team_name_en || m.home_team_name_fa || m.home_team_label);
+                    const away = getTeamInfo(m.away_team_name_en || m.away_team_name_fa || m.away_team_label);
+                    const state = getMatchState(m.finished, m.time_elapsed);
+                    const isLive = !m.finished && m.time_elapsed;
+
+                    return `
+                    <div class="bracket-match knockout mb-3">
+                        <div class="team-row ${m.finished && m.home_score > m.away_score ? 'winner' : m.finished ? 'loser' : ''}">
+                            <img src="${home.flag}" class="flag w-5 h-4" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                            <span class="flex-1 text-xs">${home.name}</span>
+                            <span class="font-black ${m.finished && m.home_score > m.away_score ? 'text-green-400' : 'text-gray-500'}">${m.finished ? m.home_score : '-'}</span>
+                        </div>
+                        <div class="team-row ${m.finished && m.away_score > m.home_score ? 'winner' : m.finished ? 'loser' : ''}">
+                            <img src="${away.flag}" class="flag w-5 h-4" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                            <span class="flex-1 text-xs">${away.name}</span>
+                            <span class="font-black ${m.finished && m.away_score > m.home_score ? 'text-green-400' : 'text-gray-500'}">${m.finished ? m.away_score : '-'}</span>
+                        </div>
+                        ${state.label !== '未开始' ? `<div class="text-center mt-1.5 ${isLive ? 'text-green-400' : 'text-gray-500'} text-xs font-bold">${state.label}</div>` : ''}
+                    </div>
+                `}).join('')}
+            </div>
+        `}).join('');
+    }
+
+    // ============================================================
+    // RENDER STANDINGS
+    // ============================================================
+    function renderStandings(group = 'A') {
+        const tbody = document.getElementById('standings-body');
+
+        // Use static data if API is not connected
+        let groupData = null;
+        if (apiConnected && groupsData.length > 0) {
+            groupData = groupsData.find(g => g.group === group);
+        }
+
+        // Fallback to static group data
+        if (!groupData) {
+            const staticGroup = STATIC_GROUPS.find(g => g.group === group);
+            if (staticGroup) {
+                groupData = staticGroup;
+            }
+        }
+
+        if (!groupData || !groupData.teams) {
+            // Render empty standings with group teams
+            const groupTeams = getGroupTeams(group);
+            tbody.innerHTML = groupTeams.map((teamName, i) => {
+                const teamInfo = getTeamInfo(teamName);
+                const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'bg-gray-700/80';
+                return `
+                <tr class="border-b border-gray-800/50 transition-all hover:bg-gray-800/30">
+                    <td class="py-3 px-4"><span class="rank-badge ${rankClass}">${i + 1}</span></td>
+                    <td class="py-3 px-4">
+                        <div class="flex items-center gap-2">
+                            <img src="${teamInfo.flag}" class="flag" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                            <span class="font-semibold">${teamInfo.name}</span>
+                        </div>
+                    </td>
+                    <td class="py-3 px-4 text-center text-gray-500">0</td>
+                    <td class="py-3 px-4 text-center text-gray-500">0</td>
+                    <td class="py-3 px-4 text-center text-gray-500">0</td>
+                    <td class="py-3 px-4 text-center text-gray-500">0</td>
+                    <td class="py-3 px-4 text-center text-gray-500">0</td>
+                    <td class="py-3 px-4 text-center text-gray-500">0</td>
+                    <td class="py-3 px-4 text-center text-gray-500">0</td>
+                    <td class="py-3 px-4 text-center font-black text-blue-400 text-lg">0</td>
+                </tr>
+            `}).join('');
+            return;
+        }
+
+        const standings = [...groupData.teams].sort((a, b) => {
+            if (b.points !== a.points) return b.points - a.points;
+            if (b.gd !== a.gd) return b.gd - a.gd;
+            return b.gf - a.gf;
+        });
+
+        tbody.innerHTML = standings.map((s, i) => {
+            const teamInfo = getTeamInfo(s.name_en || s.name_fa || s.team);
+            const rankClass = i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'bg-gray-700/80';
+            return `
+            <tr class="border-b border-gray-800/50 transition-all hover:bg-gray-800/30">
+                <td class="py-3 px-4"><span class="rank-badge ${rankClass}">${i + 1}</span></td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                        <img src="${teamInfo.flag}" class="flag" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                        <span class="font-semibold">${teamInfo.name}</span>
+                    </div>
+                </td>
+                <td class="py-3 px-4 text-center">${s.played || 0}</td>
+                <td class="py-3 px-4 text-center text-green-400 font-bold">${s.won || 0}</td>
+                <td class="py-3 px-4 text-center text-gray-400">${s.drawn || 0}</td>
+                <td class="py-3 px-4 text-center text-red-400 font-bold">${s.lost || 0}</td>
+                <td class="py-3 px-4 text-center">${s.gf || 0}</td>
+                <td class="py-3 px-4 text-center">${s.ga || 0}</td>
+                <td class="py-3 px-4 text-center ${(s.gd || 0) > 0 ? 'text-green-400' : (s.gd || 0) < 0 ? 'text-red-400' : 'text-gray-400'}">${(s.gd || 0) > 0 ? '+' : ''}${s.gd || 0}</td>
+                <td class="py-3 px-4 text-center font-black text-blue-400 text-lg">${s.points || 0}</td>
+            </tr>
+        `}).join('');
+    }
+
+    function getGroupTeams(group) {
+        const groups = {
+            "A": ["Mexico", "South Africa", "Norway", "New Zealand"],
+            "B": ["Argentina", "Japan", "Senegal", "Scotland"],
+            "C": ["Brazil", "Germany", "Algeria", "North Korea"],
+            "D": ["France", "Italy", "Egypt", "Trinidad and Tobago"],
+            "E": ["England", "Spain", "Nigeria", "Jamaica"],
+            "F": ["Portugal", "Netherlands", "Iran", "Australia"],
+            "G": ["United States", "Croatia", "Morocco", "Canada"],
+            "H": ["Belgium", "Uruguay", "Poland", "Ecuador"],
+            "I": ["Switzerland", "Sweden", "Cameroon", "Saudi Arabia"],
+            "J": ["Denmark", "Colombia", "Greece", "South Africa"],
+            "K": ["Chile", "Serbia", "Albania", "Qatar"],
+            "L": ["Wales", "Ukraine", "Iceland", "Honduras"],
+        };
+        return groups[group] || [];
+    }
+
+    // ============================================================
+    // RENDER SCHEDULE
+    // ============================================================
+    function renderSchedule() {
+        const tbody = document.getElementById('schedule-body');
+        const groupFilter = document.getElementById('group-filter').value;
+        const focusOnly = document.getElementById('filter-focus-btn').classList.contains('active');
+
+        // Use static data if API is not connected
+        const dataSource = (apiConnected && matchesData.length > 0) ? matchesData : STATIC_MATCHES;
+
+        let filtered = [...dataSource];
+
+        if (groupFilter !== 'all') {
+            filtered = filtered.filter(m => m.type === groupFilter);
+        }
+        if (focusOnly) {
+            filtered = filtered.filter(m => FOCUS_MATCH_IDS.includes(m.id));
+        }
+
+        filtered.sort((a, b) => new Date(a.local_date) - new Date(b.local_date));
+
+        tbody.innerHTML = filtered.map(m => {
+            const home = getTeamInfo(m.home_team_name_en || m.home_team_name_fa || m.home_team_label);
+            const away = getTeamInfo(m.away_team_name_en || m.away_team_name_fa || m.away_team_label);
+            const beijing = parseBeijingTime(m.local_date);
+            const state = getMatchState(m.finished, m.time_elapsed);
+            const isFocus = FOCUS_MATCH_IDS.includes(m.id);
+            const isLive = !m.finished && m.time_elapsed;
+
+            return `
+            <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-all ${isFocus ? 'focus-highlight' : ''}">
+                <td class="py-3 px-4 text-gray-500">${m.id}</td>
+                <td class="py-3 px-4">
+                    <div class="beijing-time-box inline-block">
+                        <div class="text-gray-300 text-xs">${beijing.date}</div>
+                        <div class="text-red-400 font-black text-lg">${beijing.time}</div>
+                    </div>
+                </td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                        <img src="${home.flag}" class="flag" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                        <span class="${isFocus ? 'text-yellow-400 font-bold' : 'text-white'}">${home.name}</span>
+                        <span class="text-gray-600">vs</span>
+                        <img src="${away.flag}" class="flag" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                        <span class="${isFocus ? 'text-yellow-400 font-bold' : 'text-white'}">${away.name}</span>
+                        ${isFocus ? '<span class="ml-1 text-xs">⭐</span>' : ''}
+                    </div>
+                </td>
+                <td class="py-3 px-4 text-gray-400 text-xs">${m.ground || '-'}</td>
+                <td class="py-3 px-4 text-center"><span class="${state.class} px-2.5 py-1 rounded-full text-xs font-bold">${state.label}</span></td>
+                <td class="py-3 px-4 text-center">
+                    ${m.finished || isLive ? `
+                        <span class="${isLive ? 'text-green-400 font-bold' : 'text-white'}">${m.home_score} - ${m.away_score}</span>
+                    ` : '-'}
+                </td>
+            </tr>
+        `}).join('');
+    }
+
+    // ============================================================
+    // RENDER SCORERS (Top Goals)
+    // ============================================================
+    function renderScorers() {
+        const tbody = document.getElementById('scorers-body');
+
+        // Use static data if API is not connected
+        const dataSource = (apiConnected && matchesData.length > 0) ? matchesData : STATIC_MATCHES;
+
+        // Aggregate scorers from all matches
+        const scorersMap = {};
+
+        dataSource.forEach(m => {
+            if (m.home_scorers && Array.isArray(m.home_scorers)) {
+                m.home_scorers.forEach(s => {
+                    const key = s.name;
+                    if (!scorersMap[key]) {
+                        scorersMap[key] = { name: s.name, team: m.home_team_name_en, goals: 0 };
+                    }
+                    scorersMap[key].goals += (s.minute ? 1 : 0);
+                });
+            }
+            if (m.away_scorers && Array.isArray(m.away_scorers)) {
+                m.away_scorers.forEach(s => {
+                    const key = s.name;
+                    if (!scorersMap[key]) {
+                        scorersMap[key] = { name: s.name, team: m.away_team_name_en, goals: 0 };
+                    }
+                    scorersMap[key].goals += (s.minute ? 1 : 0);
+                });
+            }
+        });
+
+        const scorers = Object.values(scorersMap)
+            .sort((a, b) => b.goals - a.goals)
+            .slice(0, 10);
+
+        if (scorers.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="4" class="py-8 text-center text-gray-500">比赛开始后实时更新</td></tr>';
+            return;
+        }
+
+        tbody.innerHTML = scorers.map((s, i) => {
+            const teamInfo = getTeamInfo(s.team);
+            const rankClass = i === 0 ? 'bg-amber-500' : i === 1 ? 'bg-gray-400' : i === 2 ? 'bg-amber-700' : 'bg-gray-600';
+            return `
+            <tr class="border-b border-gray-800/50 hover:bg-gray-800/30 transition-all">
+                <td class="py-3 px-4"><span class="w-7 h-7 rounded-full ${rankClass} text-black flex items-center justify-center text-xs font-black">${i + 1}</span></td>
+                <td class="py-3 px-4 font-semibold">${s.name}</td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                        <img src="${teamInfo.flag}" class="flag" onerror="this.src='https://flagcdn.com/w80/xx.png'">
+                        <span class="text-gray-400 text-sm">${teamInfo.name}</span>
+                    </div>
+                </td>
+                <td class="py-3 px-4 text-center">
+                    <span class="text-amber-400 font-black text-lg">${s.goals}</span>
+                    <span class="text-gray-500 text-xs">球</span>
+                </td>
+            </tr>
+        `}).join('');
+    }
+
+    // ============================================================
+    // RENDER ALL
+    // ============================================================
+    function renderAll() {
+        renderFocusMatches();
+        renderBracket();
+        renderSchedule();
+        renderScorers();
+    }
+
+    // ============================================================
+    // TAB NAVIGATION
+    // ============================================================
+    function initTabs() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`section-${btn.dataset.tab}`).classList.remove('hidden');
+
+                if (btn.dataset.tab === 'standings') {
+                    renderStandings('A');
+                }
+            });
+        });
+
+        const groupTabs = document.getElementById('group-tabs');
+        ['A','B','C','D','E','F','G','H','I','J','K','L'].forEach((g, i) => {
+            const btn = document.createElement('button');
+            btn.className = `px-4 py-2 rounded-xl text-sm font-bold transition-all ${i === 0 ? 'bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg shadow-blue-500/30' : 'bg-gray-700/60 hover:bg-gray-600'}`;
+            btn.textContent = `第${g}组`;
+            btn.addEventListener('click', () => {
+                groupTabs.querySelectorAll('button').forEach(b => b.className = 'px-4 py-2 rounded-xl text-sm font-bold transition-all bg-gray-700/60 hover:bg-gray-600');
+                btn.className = 'px-4 py-2 rounded-xl text-sm font-bold transition-all bg-gradient-to-r from-blue-600 to-blue-700 shadow-lg shadow-blue-500/30';
+                renderStandings(g);
+            });
+            groupTabs.appendChild(btn);
+        });
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    function init() {
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        initTabs();
+
+        // Try to fetch from API, fallback to static data on failure
+        fetchData().catch(() => {
+            apiConnected = false;
+            updateApiStatus('disconnected', '使用本地数据');
+            renderFallbackData();
+        });
+
+        // Refresh data every 60 seconds
+        setInterval(fetchData, 60000);
+
+        // Render static data immediately while waiting for API
+        renderFallbackData();
+
+        document.getElementById('group-filter').addEventListener('change', renderSchedule);
+        document.getElementById('filter-focus-btn').addEventListener('click', function() {
+            this.classList.toggle('active');
+            if (this.classList.contains('active')) {
+                this.classList.add('bg-yellow-500/30', 'border-yellow-500');
+            } else {
+                this.classList.remove('bg-yellow-500/30', 'border-yellow-500');
+            }
+            renderSchedule();
+        });
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
