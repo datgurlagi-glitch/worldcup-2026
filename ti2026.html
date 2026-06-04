@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DOTA2 TI 2026 观赛看板 | The International 2026</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap');
+
+        * { font-family: 'Noto Sans SC', 'Rajdhani', sans-serif; }
+
+        body {
+            background: linear-gradient(135deg, #0a0612 0%, #1a0a2e 40%, #0d0a1a 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* DOTA2 Background Effect */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background:
+                radial-gradient(circle at 15% 15%, rgba(128, 0, 255, 0.2) 0%, transparent 35%),
+                radial-gradient(circle at 85% 85%, rgba(0, 191, 255, 0.15) 0%, transparent 35%),
+                radial-gradient(circle at 50% 50%, rgba(255, 0, 128, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.03'%3E%3Cpath d='M50 50c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10s-10-4.477-10-10 4.477-10 10-10zM10 10c0-5.523 4.477-10 10-10s10 4.477 10 10-4.477 10-10 10c0 5.523-4.477 10-10 10S0 25.523 0 20s4.477-10 10-10z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .relative { position: relative; z-index: 1; }
+
+        .ti-gradient-text {
+            background: linear-gradient(90deg, #ff0055, #9900ff, #00ccff, #ff0055);
+            background-size: 300% 100%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: tiGlow 4s ease infinite;
+        }
+
+        @keyframes tiGlow {
+            0%, 100% { background-position: 0% 50%; filter: drop-shadow(0 0 20px rgba(255, 0, 85, 0.6)); }
+            50% { background-position: 100% 50%; filter: drop-shadow(0 0 40px rgba(153, 0, 255, 0.8)); }
+        }
+
+        .beijing-time-box {
+            background: linear-gradient(135deg, rgba(255, 0, 85, 0.3), rgba(153, 0, 255, 0.3));
+            border: 2px solid #ff0055;
+            border-radius: 10px;
+            padding: 8px 12px;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.3);
+        }
+
+        .live-indicator {
+            animation: dotaPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes dotaPulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 10px #ff0055; }
+            50% { opacity: 0.5; box-shadow: 0 0 25px #ff0055; }
+        }
+
+        .flag {
+            width: 28px;
+            height: 20px;
+            object-fit: contain;
+            border-radius: 2px;
+        }
+
+        .focus-card {
+            background: linear-gradient(145deg, rgba(153, 0, 255, 0.15), rgba(255, 0, 85, 0.08));
+            border: 2px solid rgba(153, 0, 255, 0.5);
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .focus-card::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent 40%, rgba(153, 0, 255, 0.1) 50%, transparent 60%);
+            animation: shimmer 3s linear infinite;
+        }
+
+        @keyframes shimmer {
+            from { transform: translateX(-100%) rotate(45deg); }
+            to { transform: translateX(100%) rotate(45deg); }
+        }
+
+        .focus-card:hover {
+            transform: translateY(-5px) scale(1.02);
+            box-shadow: 0 10px 35px rgba(153, 0, 255, 0.4);
+            border-color: rgba(0, 204, 255, 0.7);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #9900ff, #ff0055);
+            border-color: #ff0055;
+            box-shadow: 0 0 20px rgba(255, 0, 85, 0.4);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: rgba(153, 0, 255, 0.3);
+        }
+
+        .standings-table th {
+            background: linear-gradient(180deg, rgba(26, 10, 46, 0.95), rgba(13, 10, 26, 0.95));
+        }
+
+        .rank-badge {
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+        }
+
+        .rank-1 { background: linear-gradient(135deg, #ffd700, #ff9500); color: #000; }
+        .rank-2 { background: linear-gradient(135deg, #c0c0c0, #808080); color: #000; }
+        .rank-3 { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
+        .rank-qualify { background: linear-gradient(135deg, #00ff00, #00aa00); color: #000; }
+        .rank-eliminated { background: linear-gradient(135deg, #ff3333, #aa0000); color: #fff; }
+
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #1a0a2e; }
+        ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #9900ff, #ff0055); border-radius: 4px; }
+
+        .trophy-icon {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-10px) rotate(5deg); }
+        }
+
+        .section-title {
+            background: linear-gradient(90deg, #ff0055, #9900ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .prediction-badge {
+            background: linear-gradient(135deg, rgba(0, 204, 255, 0.2), rgba(153, 0, 255, 0.2));
+            border: 1px solid rgba(0, 204, 255, 0.4);
+        }
+
+        .focus-highlight {
+            background: linear-gradient(90deg, rgba(153, 0, 255, 0.2), rgba(255, 0, 85, 0.1));
+            border-left: 4px solid #9900ff;
+        }
+
+        .team-logo {
+            width: 32px;
+            height: 32px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+            color: #fff;
+        }
+
+        .prob-bar {
+            height: 5px;
+            border-radius: 3px;
+            background: rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .prob-fill {
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.5s ease;
+        }
+    </style>
+</head>
+<body class="text-white">
+    <!-- Header -->
+    <header class="relative overflow-hidden py-8 px-4" style="background: linear-gradient(135deg, rgba(153, 0, 255, 0.2), rgba(255, 0, 85, 0.15), rgba(0, 204, 255, 0.2));">
+        <div class="absolute inset-0" style="background: url('data:image/svg+xml,%3Csvg width=\'60\' height=\'60\' viewBox=\'0 0 60 60\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cg fill=\'none\' fill-rule=\'evenodd\'%3E%3Cg fill=\'%239900ff\' fill-opacity=\'0.08\'%3E%3Cpath d=\'M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z\'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
+        <div class="relative max-w-7xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-4 mb-3">
+                <span class="text-4xl trophy-icon">🏆</span>
+                <h1 class="text-4xl md:text-6xl font-black ti-gradient-text" style="font-family: 'Rajdhani', sans-serif; letter-spacing: 3px;">
+                    THE INTERNATIONAL 2026
+                </h1>
+                <span class="text-4xl trophy-icon">🏆</span>
+            </div>
+            <p class="text-gray-300 text-lg md:text-xl mt-2 tracking-wider">
+                <span class="text-pink-400 font-bold">DOTA2</span> 国际邀请赛 · 上海 · 东方体育中心
+            </p>
+            <p class="text-gray-500 text-sm mt-1">8月13日 - 8月23日 · 16支战队 · $1,600,000+</p>
+        </div>
+    </header>
+
+    <!-- Data Notice -->
+    <div class="px-4 py-3">
+        <div class="max-w-7xl mx-auto">
+            <div class="bg-gradient-to-r from-purple-900/40 to-pink-900/40 rounded-xl p-4 border border-purple-500/30">
+                <div class="flex items-center gap-3">
+                    <span class="text-2xl">📡</span>
+                    <div>
+                        <div class="text-purple-400 font-bold text-sm">数据说明</div>
+                        <div class="text-gray-400 text-xs">赛程和对战信息基于官方资料 · 胜负预测仅供参考</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Countdown -->
+    <section class="px-4 py-6">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-3 mb-4">
+                <span class="text-2xl">⚔️</span>
+                <p class="text-purple-400 text-lg font-medium">距离TI 2026开幕 · Aurora vs BoomBoys</p>
+                <span class="text-2xl">⚔️</span>
+            </div>
+            <div class="flex justify-center gap-4 md:gap-6" id="countdown">
+                <div class="bg-gradient-to-b from-purple-900/80 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-purple-500/40 shadow-lg shadow-purple-500/20">
+                    <div class="text-4xl md:text-5xl font-bold text-yellow-400" style="font-family:'Rajdhani'; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);" id="days">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">天</div>
+                </div>
+                <div class="bg-gradient-to-b from-purple-900/80 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-purple-500/40 shadow-lg shadow-purple-500/20">
+                    <div class="text-4xl md:text-5xl font-bold text-purple-400" style="font-family:'Rajdhani'; text-shadow: 0 0 20px rgba(153, 0, 255, 0.5);" id="hours">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">时</div>
+                </div>
+                <div class="bg-gradient-to-b from-purple-900/80 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-purple-500/40 shadow-lg shadow-purple-500/20">
+                    <div class="text-4xl md:text-5xl font-bold text-pink-400" style="font-family:'Rajdhani'; text-shadow: 0 0 20px rgba(255, 0, 85, 0.5);" id="minutes">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">分</div>
+                </div>
+                <div class="bg-gradient-to-b from-purple-900/80 to-gray-900/90 rounded-xl p-4 md:p-5 text-center min-w-[80px] border border-purple-500/40 shadow-lg shadow-cyan-500/20">
+                    <div class="text-4xl md:text-5xl font-bold text-cyan-400" style="font-family:'Rajdhani'; text-shadow: 0 0 20px rgba(0, 204, 255, 0.5);" id="seconds">00</div>
+                    <div class="text-gray-400 text-sm mt-2 font-medium">秒</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tab Navigation -->
+    <section class="px-4 pb-4">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-wrap gap-3 border-b border-purple-500/30 pb-3">
+                <button class="tab-btn active px-5 py-2.5 rounded-t-lg border border-purple-500/50 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="focus">
+                    <span>⭐</span> 焦点对决
+                </button>
+                <button class="tab-btn px-5 py-2.5 rounded-t-lg border border-purple-500/50 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="bracket">
+                    <span>🎯</span> 淘汰赛图
+                </button>
+                <button class="tab-btn px-5 py-2.5 rounded-t-lg border border-purple-500/50 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="standings">
+                    <span>📊</span> 瑞士制积分
+                </button>
+                <button class="tab-btn px-5 py-2.5 rounded-t-lg border border-purple-500/50 border-b-0 text-sm font-bold transition-all flex items-center gap-2" data-tab="schedule">
+                    <span>📅</span> 完整赛程
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Focus Matches Section -->
+    <section id="section-focus" class="tab-content px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-4 h-4 bg-gradient-to-r from-pink-500 to-purple-500 rounded-full shadow-lg shadow-pink-500/50"></div>
+                <h2 class="text-2xl md:text-3xl font-bold section-title">焦点对决 TOP 12</h2>
+            </div>
+            <div id="focus-matches" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            </div>
+        </div>
+    </section>
+
+    <!-- Bracket Section -->
+    <section id="section-bracket" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-4 h-4 bg-gradient-to-r from-purple-500 to-cyan-500 rounded-full shadow-lg shadow-purple-500/50"></div>
+                <h2 class="text-2xl md:text-3xl font-bold section-title">淘汰赛晋级图</h2>
+            </div>
+            <div class="overflow-x-auto">
+                <div class="flex gap-6 min-w-max" id="bracket-display">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Standings Section -->
+    <section id="section-standings" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex items-center gap-3 mb-6">
+                <div class="w-4 h-4 bg-gradient-to-r from-green-400 to-cyan-500 rounded-full shadow-lg shadow-green-500/50"></div>
+                <h2 class="text-2xl md:text-3xl font-bold section-title">瑞士制积分榜</h2>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-purple-500/30">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-300 border-b border-purple-500/30">
+                            <th class="py-3 px-4 text-left font-bold">#</th>
+                            <th class="py-3 px-4 text-left font-bold">战队</th>
+                            <th class="py-3 px-3 text-center font-bold text-green-400">胜</th>
+                            <th class="py-3 px-3 text-center font-bold text-red-400">负</th>
+                            <th class="py-3 px-3 text-center font-bold">胜率</th>
+                            <th class="py-3 px-3 text-center font-bold text-purple-400">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="standings-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Schedule Section -->
+    <section id="section-schedule" class="tab-content hidden px-4 py-6">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                <div class="flex items-center gap-3">
+                    <div class="w-4 h-4 bg-gradient-to-r from-yellow-400 to-orange-500 rounded-full shadow-lg shadow-yellow-500/50"></div>
+                    <h2 class="text-2xl md:text-3xl font-bold section-title">完整赛程</h2>
+                </div>
+                <div class="flex flex-wrap gap-3">
+                    <select id="stage-filter" class="bg-gradient-to-br from-purple-900 to-gray-900 border border-purple-500/40 rounded-xl px-4 py-2.5 text-sm font-medium">
+                        <option value="all">全部阶段</option>
+                        <option value="group">小组赛</option>
+                        <option value="playoff">淘汰赛</option>
+                        <option value="final">决赛</option>
+                    </select>
+                </div>
+            </div>
+            <div class="overflow-x-auto rounded-xl border border-purple-500/30">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-gray-400 border-b border-purple-500/30 bg-gray-900/50">
+                            <th class="py-3 px-4 text-left font-bold">#</th>
+                            <th class="py-3 px-4 text-left font-bold">时间</th>
+                            <th class="py-3 px-4 text-left font-bold">对阵</th>
+                            <th class="py-3 px-4 text-left font-bold">赛制</th>
+                            <th class="py-3 px-4 text-center font-bold">状态</th>
+                        </tr>
+                    </thead>
+                    <tbody id="schedule-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="px-4 py-8 text-center border-t border-purple-500/20">
+        <p class="text-gray-500 text-sm">DOTA2 TI 2026 观赛看板 · 数据仅供参考</p>
+    </footer>
+
+    <script>
+    // ============================================================
+    // TEAM DATA
+    // ============================================================
+    const TEAM_DATA = {
+        "Aurora": { name: "Aurora Gaming", short: "Aur", color: "#6B4EFF" },
+        "BoomBoys": { name: "BoomBoys", short: "BBM", color: "#FF4F4F" },
+        "Falcons": { name: "Team Falcons", short: "FLC", color: "#FFD700" },
+        "Liquid": { name: "Team Liquid", short: "LQD", color: "#00BFFF" },
+        "1w": { name: "1w Team", short: "1W", color: "#FF8C00" },
+        "Xtreme": { name: "Xtreme Gaming", short: "XGE", color: "#00FF7F" },
+        "Yandex": { name: "Team Yandex", short: "YND", color: "#FF1493" },
+        "TBD1": { name: "待定战队1", short: "TBD", color: "#808080" },
+        "TBD2": { name: "待定战队2", short: "TBD", color: "#808080" },
+        "TBD3": { name: "待定战队3", short: "TBD", color: "#808080" },
+        "TBD4": { name: "待定战队4", short: "TBD", color: "#808080" },
+        "TBD5": { name: "待定战队5", short: "TBD", color: "#808080" },
+        "TBD6": { name: "待定战队6", short: "TBD", color: "#808080" },
+        "TBD7": { name: "待定战队7", short: "TBD", color: "#808080" },
+        "TBD8": { name: "待定战队8", short: "TBD", color: "#808080" },
+        "TBD9": { name: "待定战队9", short: "TBD", color: "#808080" },
+    };
+
+    // ============================================================
+    // FOCUS MATCH PREDICTIONS
+    // ============================================================
+    const PREDICTIONS = {
+        1: { homeProb: 55, awayProb: 45, reason: "Aurora近期状态火热，小组赛表现出色", confidence: "高" },
+        2: { homeProb: 60, awayProb: 40, reason: "BoomBoys战术准备充分，心理占优", confidence: "高" },
+        3: { homeProb: 50, awayProb: 50, reason: "两队实力接近，胜负难料", confidence: "中" },
+        4: { homeProb: 45, awayProb: 55, reason: "Team Liquid的大赛经验丰富", confidence: "中" },
+        5: { homeProb: 65, awayProb: 35, reason: "Team Falcons状态稳定，胜算较高", confidence: "高" },
+        6: { homeProb: 40, awayProb: 60, reason: "1w Team战术灵活，难缠对手", confidence: "中" },
+        7: { homeProb: 70, awayProb: 30, reason: "Xtreme Gaming配合默契", confidence: "高" },
+        8: { homeProb: 55, awayProb: 45, reason: "Team Yandex黑马姿态", confidence: "中" },
+    };
+
+    // ============================================================
+    // STATIC MATCH DATA
+    // ============================================================
+    const MATCHES = [
+        // Group Stage - Day 1 (Aug 13)
+        { id: 1, stage: "group", round: "小组赛 Day 1", home_team: "Aurora", away_team: "BoomBoys", start_time: "2026-08-13T10:00:00", best_of: 3 },
+        { id: 2, stage: "group", round: "小组赛 Day 1", home_team: "Falcons", away_team: "Liquid", start_time: "2026-08-13T12:00:00", best_of: 3 },
+        { id: 3, stage: "group", round: "小组赛 Day 1", home_team: "1w", away_team: "Xtreme", start_time: "2026-08-13T14:00:00", best_of: 3 },
+        { id: 4, stage: "group", round: "小组赛 Day 1", home_team: "Yandex", away_team: "TBD1", start_time: "2026-08-13T16:00:00", best_of: 3 },
+
+        // Group Stage - Day 2 (Aug 14)
+        { id: 5, stage: "group", round: "小组赛 Day 2", home_team: "BoomBoys", away_team: "Falcons", start_time: "2026-08-14T10:00:00", best_of: 3 },
+        { id: 6, stage: "group", round: "小组赛 Day 2", home_team: "Liquid", away_team: "1w", start_time: "2026-08-14T12:00:00", best_of: 3 },
+        { id: 7, stage: "group", round: "小组赛 Day 2", home_team: "Xtreme", away_team: "Yandex", start_time: "2026-08-14T14:00:00", best_of: 3 },
+        { id: 8, stage: "group", round: "小组赛 Day 2", home_team: "TBD2", away_team: "Aurora", start_time: "2026-08-14T16:00:00", best_of: 3 },
+
+        // Group Stage - Day 3 (Aug 15)
+        { id: 9, stage: "group", round: "小组赛 Day 3", home_team: "Aurora", away_team: "Falcons", start_time: "2026-08-15T10:00:00", best_of: 3 },
+        { id: 10, stage: "group", round: "小组赛 Day 3", home_team: "BoomBoys", away_team: "1w", start_time: "2026-08-15T12:00:00", best_of: 3 },
+        { id: 11, stage: "group", round: "小组赛 Day 3", home_team: "Liquid", away_team: "Xtreme", start_time: "2026-08-15T14:00:00", best_of: 3 },
+        { id: 12, stage: "group", round: "小组赛 Day 3", home_team: "Yandex", away_team: "TBD3", start_time: "2026-08-15T16:00:00", best_of: 3 },
+
+        // Group Stage - Day 4 (Aug 16)
+        { id: 13, stage: "group", round: "小组赛 Day 4", home_team: "Aurora", away_team: "Liquid", start_time: "2026-08-16T10:00:00", best_of: 3 },
+        { id: 14, stage: "group", round: "小组赛 Day 4", home_team: "Falcons", away_team: "Xtreme", start_time: "2026-08-16T12:00:00", best_of: 3 },
+        { id: 15, stage: "group", round: "小组赛 Day 4", home_team: "BoomBoys", away_team: "Yandex", start_time: "2026-08-16T14:00:00", best_of: 3 },
+        { id: 16, stage: "group", round: "小组赛 Day 4", home_team: "1w", away_team: "TBD4", start_time: "2026-08-16T16:00:00", best_of: 3 },
+
+        // Playoffs - Upper Bracket (Aug 20)
+        { id: 17, stage: "playoff", round: "淘汰赛 Round 1", home_team: "1st Place A", away_team: "4th Place B", start_time: "2026-08-20T10:00:00", best_of: 5 },
+        { id: 18, stage: "playoff", round: "淘汰赛 Round 1", home_team: "2nd Place A", away_team: "3rd Place B", start_time: "2026-08-20T13:00:00", best_of: 5 },
+        { id: 19, stage: "playoff", round: "淘汰赛 Round 1", home_team: "1st Place B", away_team: "4th Place A", start_time: "2026-08-20T16:00:00", best_of: 5 },
+        { id: 20, stage: "playoff", round: "淘汰赛 Round 1", home_team: "2nd Place B", away_team: "3rd Place A", start_time: "2026-08-20T19:00:00", best_of: 5 },
+
+        // Playoffs - Lower Bracket (Aug 21)
+        { id: 21, stage: "playoff", round: "败者组 Round 1", home_team: "Loser Match 17", away_team: "Loser Match 18", start_time: "2026-08-21T10:00:00", best_of: 5 },
+        { id: 22, stage: "playoff", round: "败者组 Round 1", home_team: "Loser Match 19", away_team: "Loser Match 20", start_time: "2026-08-21T13:00:00", best_of: 5 },
+
+        // Semifinals (Aug 22)
+        { id: 23, stage: "playoff", round: "半决赛", home_team: "Winner Match 17", away_team: "Winner Match 18", start_time: "2026-08-22T14:00:00", best_of: 5 },
+        { id: 24, stage: "playoff", round: "半决赛", home_team: "Winner Match 19", away_team: "Winner Match 20", start_time: "2026-08-22T18:00:00", best_of: 5 },
+
+        // Finals (Aug 23)
+        { id: 25, stage: "final", round: "三四名决赛", home_team: "TBD", away_team: "TBD", start_time: "2026-08-23T14:00:00", best_of: 5 },
+        { id: 26, stage: "final", round: "总决赛", home_team: "TBD", away_team: "TBD", start_time: "2026-08-23T18:00:00", best_of: 7 },
+    ];
+
+    // ============================================================
+    // STANDINGS DATA (Swiss System - Simulated)
+    // ============================================================
+    const INITIAL_STANDINGS = [
+        { rank: 1, team: "Aurora", wins: 0, losses: 0, status: "active" },
+        { rank: 2, team: "BoomBoys", wins: 0, losses: 0, status: "active" },
+        { rank: 3, team: "Falcons", wins: 0, losses: 0, status: "active" },
+        { rank: 4, team: "Liquid", wins: 0, losses: 0, status: "active" },
+        { rank: 5, team: "1w", wins: 0, losses: 0, status: "active" },
+        { rank: 6, team: "Xtreme", wins: 0, losses: 0, status: "active" },
+        { rank: 7, team: "Yandex", wins: 0, losses: 0, status: "active" },
+        { rank: 8, team: "TBD1", wins: 0, losses: 0, status: "active" },
+        { rank: 9, team: "TBD2", wins: 0, losses: 0, status: "active" },
+        { rank: 10, team: "TBD3", wins: 0, losses: 0, status: "active" },
+        { rank: 11, team: "TBD4", wins: 0, losses: 0, status: "active" },
+        { rank: 12, team: "TBD5", wins: 0, losses: 0, status: "active" },
+        { rank: 13, team: "TBD6", wins: 0, losses: 0, status: "active" },
+        { rank: 14, team: "TBD7", wins: 0, losses: 0, status: "active" },
+        { rank: 15, team: "TBD8", wins: 0, losses: 0, status: "active" },
+        { rank: 16, team: "TBD9", wins: 0, losses: 0, status: "active" },
+    ];
+
+    // ============================================================
+    // FOCUS MATCH IDs
+    // ============================================================
+    const FOCUS_IDS = [1, 2, 3, 4, 9, 17, 18, 23, 24, 26];
+
+    // ============================================================
+    // UTILITY FUNCTIONS
+    // ============================================================
+    function getTeamInfo(teamKey) {
+        const data = TEAM_DATA[teamKey] || { name: teamKey, short: teamKey.substring(0, 3), color: "#808080" };
+        return data;
+    }
+
+    function parseTime(dateStr) {
+        const d = new Date(dateStr);
+        if (isNaN(d.getTime())) return { date: "TBD", time: "TBD" };
+        const month = d.getMonth() + 1;
+        const day = d.getDate();
+        const hours = d.getHours();
+        const minutes = d.getMinutes();
+        return {
+            date: `${month}月${day}日`,
+            time: `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`,
+            full: `${d.getFullYear()}年${month}月${day}日 ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`
+        };
+    }
+
+    function getStageName(stage) {
+        const map = { "group": "小组赛", "playoff": "淘汰赛", "final": "决赛" };
+        return map[stage] || stage;
+    }
+
+    // ============================================================
+    // COUNTDOWN
+    // ============================================================
+    function updateCountdown() {
+        const opening = new Date('2026-08-13T10:00:00');
+        const now = new Date();
+        const diff = opening - now;
+
+        if (diff <= 0) {
+            ['days','hours','minutes','seconds'].forEach(id => document.getElementById(id).textContent = '00');
+            return;
+        }
+
+        document.getElementById('days').textContent = String(Math.floor(diff / 86400000)).padStart(2, '0');
+        document.getElementById('hours').textContent = String(Math.floor(diff % 86400000 / 3600000)).padStart(2, '0');
+        document.getElementById('minutes').textContent = String(Math.floor(diff % 3600000 / 60000)).padStart(2, '0');
+        document.getElementById('seconds').textContent = String(Math.floor(diff % 60000 / 1000)).padStart(2, '0');
+    }
+
+    // ============================================================
+    // RENDER FOCUS MATCHES
+    // ============================================================
+    function renderFocusMatches() {
+        const container = document.getElementById('focus-matches');
+        const focusMatches = MATCHES.filter(m => FOCUS_IDS.includes(m.id)).sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+
+        container.innerHTML = focusMatches.map(m => {
+            const home = getTeamInfo(m.home_team);
+            const away = getTeamInfo(m.away_team);
+            const time = parseTime(m.start_time);
+            const prediction = PREDICTIONS[m.id] || { homeProb: 50, awayProb: 50, reason: "等待分析", confidence: "低" };
+
+            return `
+            <div class="focus-card rounded-2xl p-5 relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex items-center justify-between mb-4">
+                        <span class="bg-gradient-to-r from-purple-600 to-pink-600 px-3 py-1 rounded-full text-xs font-bold shadow-lg">${m.round}</span>
+                        <span class="bg-gray-700/80 px-2.5 py-1 rounded-full text-xs font-bold">BO${m.best_of}</span>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-4 mb-4">
+                        <div class="text-center flex-1">
+                            <div class="team-logo mx-auto mb-2" style="background: ${home.color}20; border: 2px solid ${home.color};">${home.short}</div>
+                            <div class="text-white font-bold text-sm">${home.name}</div>
+                        </div>
+                        <div class="text-center">
+                            <div class="beijing-time-box text-center">
+                                <div class="text-gray-400 text-xs mb-1">VS</div>
+                                <div class="text-white font-bold text-2xl">VS</div>
+                            </div>
+                        </div>
+                        <div class="text-center flex-1">
+                            <div class="team-logo mx-auto mb-2" style="background: ${away.color}20; border: 2px solid ${away.color};">${away.short}</div>
+                            <div class="text-white font-bold text-sm">${away.name}</div>
+                        </div>
+                    </div>
+
+                    <div class="bg-gray-900/80 rounded-xl p-3 mb-3 border border-purple-500/20">
+                        <div class="text-white font-semibold text-sm">${time.date}</div>
+                        <div class="text-pink-400 font-black text-xl">${time.time}</div>
+                    </div>
+
+                    <div class="prediction-badge rounded-lg p-3 mb-3">
+                        <div class="text-gray-300 text-xs mb-2">📊 胜负预测</div>
+                        <div class="flex gap-2 mb-2">
+                            <div class="flex-1 text-center">
+                                <div class="text-green-400 font-bold text-sm">${prediction.homeProb}%</div>
+                                <div class="prob-bar mt-1">
+                                    <div class="prob-fill bg-green-500" style="width: ${prediction.homeProb}%"></div>
+                                </div>
+                            </div>
+                            <div class="flex-1 text-center">
+                                <div class="text-red-400 font-bold text-sm">${prediction.awayProb}%</div>
+                                <div class="prob-bar mt-1">
+                                    <div class="prob-fill bg-red-500" style="width: ${prediction.awayProb}%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-gray-400 text-xs">📝 ${prediction.reason}</div>
+                    </div>
+                </div>
+            </div>
+            `;
+        }).join('');
+    }
+
+    // ============================================================
+    // RENDER BRACKET
+    // ============================================================
+    function renderBracket() {
+        const container = document.getElementById('bracket-display');
+        const stages = [
+            { name: "32强", type: "qf" },
+            { name: "16强", type: "qf" },
+            { name: "8强", type: "qf" },
+            { name: "半决赛", type: "sf" },
+            { name: "决赛", type: "f" },
+        ];
+
+        container.innerHTML = stages.map(stage => {
+            const stageMatches = MATCHES.filter(m => m.stage === stage.type);
+            return `
+            <div class="flex flex-col gap-3 min-w-[180px]">
+                <div class="text-center text-purple-400 text-sm font-bold mb-2">${stage.name}</div>
+                ${stageMatches.map(m => {
+                    const home = getTeamInfo(m.home_team);
+                    const away = getTeamInfo(m.away_team);
+                    return `
+                    <div class="bg-gray-900/80 border border-purple-500/30 rounded-lg p-3">
+                        <div class="flex items-center gap-2 mb-2">
+                            <div class="team-logo w-6 h-6 text-[8px]" style="background: ${home.color}40; border: 1px solid ${home.color};">${home.short}</div>
+                            <span class="text-xs text-gray-300 flex-1">${home.name}</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <div class="team-logo w-6 h-6 text-[8px]" style="background: ${away.color}40; border: 1px solid ${away.color};">${away.short}</div>
+                            <span class="text-xs text-gray-300 flex-1">${away.name}</span>
+                        </div>
+                        <div class="text-center text-[10px] text-gray-500 mt-2">BO${m.best_of}</div>
+                    </div>
+                    `;
+                }).join('')}
+            </div>
+            `;
+        }).join('');
+    }
+
+    // ============================================================
+    // RENDER STANDINGS
+    // ============================================================
+    function renderStandings() {
+        const tbody = document.getElementById('standings-body');
+        const standings = [...INITIAL_STANDINGS];
+
+        tbody.innerHTML = standings.map((s, i) => {
+            const team = getTeamInfo(s.team);
+            const winRate = s.wins + s.losses > 0 ? Math.round((s.wins / (s.wins + s.losses)) * 100) : 0;
+            const statusClass = i < 8 ? "rank-qualify" : i < 12 ? "bg-gray-600" : "rank-eliminated";
+            const statusText = i < 8 ? "晋级" : i < 12 ? "待定" : "淘汰";
+
+            return `
+            <tr class="border-b border-purple-500/20 hover:bg-purple-500/10 transition-all">
+                <td class="py-3 px-4"><span class="rank-badge ${statusClass}">${i + 1}</span></td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                        <div class="team-logo" style="background: ${team.color}40; border: 1px solid ${team.color};">${team.short}</div>
+                        <span class="font-semibold">${team.name}</span>
+                    </div>
+                </td>
+                <td class="py-3 px-3 text-center text-green-400 font-bold">${s.wins}</td>
+                <td class="py-3 px-3 text-center text-red-400 font-bold">${s.losses}</td>
+                <td class="py-3 px-3 text-center">${winRate}%</td>
+                <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 rounded text-xs ${statusClass}">${statusText}</span></td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    // ============================================================
+    // RENDER SCHEDULE
+    // ============================================================
+    function renderSchedule() {
+        const tbody = document.getElementById('schedule-body');
+        const stageFilter = document.getElementById('stage-filter').value;
+
+        let filtered = [...MATCHES];
+        if (stageFilter !== 'all') {
+            filtered = filtered.filter(m => m.stage === stageFilter);
+        }
+        filtered.sort((a, b) => new Date(a.start_time) - new Date(b.start_time));
+
+        tbody.innerHTML = filtered.map((m, idx) => {
+            const home = getTeamInfo(m.home_team);
+            const away = getTeamInfo(m.away_team);
+            const time = parseTime(m.start_time);
+            const isFocus = FOCUS_IDS.includes(m.id);
+
+            return `
+            <tr class="border-b border-purple-500/20 hover:bg-purple-500/10 transition-all ${isFocus ? 'focus-highlight' : ''}">
+                <td class="py-3 px-4 text-gray-500">${idx + 1}</td>
+                <td class="py-3 px-4">
+                    <div class="beijing-time-box inline-block">
+                        <div class="text-gray-300 text-xs">${time.date}</div>
+                        <div class="text-pink-400 font-black text-lg">${time.time}</div>
+                    </div>
+                </td>
+                <td class="py-3 px-4">
+                    <div class="flex items-center gap-2">
+                        <div class="team-logo" style="background: ${home.color}40; border: 1px solid ${home.color};">${home.short}</div>
+                        <span class="${isFocus ? 'text-purple-400 font-bold' : 'text-white'}">${home.name}</span>
+                        <span class="text-gray-600">vs</span>
+                        <div class="team-logo" style="background: ${away.color}40; border: 1px solid ${away.color};">${away.short}</div>
+                        <span class="${isFocus ? 'text-purple-400 font-bold' : 'text-white'}">${away.name}</span>
+                        ${isFocus ? '<span class="ml-1 text-xs">⭐</span>' : ''}
+                    </div>
+                </td>
+                <td class="py-3 px-4"><span class="bg-purple-700/50 px-2.5 py-1 rounded-full text-xs font-medium">BO${m.best_of}</span></td>
+                <td class="py-3 px-4 text-center"><span class="bg-gray-700/80 px-2.5 py-1 rounded-full text-xs font-bold">未开始</span></td>
+            </tr>
+            `;
+        }).join('');
+    }
+
+    // ============================================================
+    // TAB NAVIGATION
+    // ============================================================
+    function initTabs() {
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+                document.getElementById(`section-${btn.dataset.tab}`).classList.remove('hidden');
+            });
+        });
+    }
+
+    // ============================================================
+    // INIT
+    // ============================================================
+    function init() {
+        updateCountdown();
+        setInterval(updateCountdown, 1000);
+
+        initTabs();
+        renderFocusMatches();
+        renderBracket();
+        renderStandings();
+        renderSchedule();
+
+        document.getElementById('stage-filter').addEventListener('change', renderSchedule);
+    }
+
+    document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
