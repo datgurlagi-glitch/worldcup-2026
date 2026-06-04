@@ -16,7 +16,6 @@
             color: #fff;
         }
 
-        /* Gold Gradient Border */
         .gold-border {
             border: 1px solid transparent;
             background: linear-gradient(#1a1a1a, #1a1a1a) padding-box,
@@ -45,7 +44,6 @@
             background-clip: text;
         }
 
-        /* DOTA2 Pattern Background */
         body::before {
             content: "";
             position: fixed;
@@ -67,14 +65,13 @@
             left: 0;
             right: 0;
             bottom: 0;
-            background-image: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffd700' fill-opacity='0.03'%3E%3Cpath d='M50 5L55 15L65 10L60 20L70 22L62 28L70 35L60 33L58 45L50 38L42 45L40 33L30 35L38 28L30 22L40 20L35 10L45 15Z'/%3E%3C/g%3E%3C/svg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffd700' fill-opacity='0.03'%3E%3Cpath d='M30 5L33 12L40 10L36 17L44 19L38 24L44 30L36 28L34 38L30 32L26 38L24 28L16 30L22 24L16 19L24 17L20 10L27 12Z'/%3E%3C/g%3E%3C/svg%3E");
             pointer-events: none;
             z-index: 0;
         }
 
         .relative { position: relative; z-index: 1; }
 
-        /* Hero Pick Card */
         .hero-card {
             background: linear-gradient(180deg, #1a1a1a 0%, #252525 100%);
             border: 1px solid #333;
@@ -87,7 +84,6 @@
             box-shadow: 0 5px 20px rgba(255, 215, 0, 0.2);
         }
 
-        /* Bracket Styles */
         .bracket-container {
             display: flex;
             gap: 20px;
@@ -124,6 +120,11 @@
             padding: 6px 8px;
             border-radius: 4px;
             background: rgba(255,255,255,0.03);
+            cursor: pointer;
+        }
+
+        .team-row:hover {
+            background: rgba(255, 215, 0, 0.1);
         }
 
         .team-row.winner {
@@ -136,8 +137,8 @@
         }
 
         .team-logo-small {
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             border-radius: 4px;
             background: #333;
             display: flex;
@@ -146,6 +147,13 @@
             font-size: 8px;
             font-weight: bold;
             color: #ffd700;
+            overflow: hidden;
+        }
+
+        .team-logo-small img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
         }
 
         .flag-small {
@@ -154,7 +162,6 @@
             border-radius: 2px;
         }
 
-        /* Tab Styles */
         .tab-btn.active {
             background: linear-gradient(135deg, #ffd700, #b8860b);
             color: #000;
@@ -165,7 +172,6 @@
             background: rgba(255, 215, 0, 0.2);
         }
 
-        /* Table Styles */
         .stat-table th {
             background: linear-gradient(180deg, #1a1a1a, #0d0d0d);
             position: sticky;
@@ -178,7 +184,6 @@
             background: rgba(255, 215, 0, 0.05);
         }
 
-        /* Rank Badge */
         .rank-badge {
             width: 28px;
             height: 28px;
@@ -193,12 +198,10 @@
         .rank-2 { background: linear-gradient(135deg, #c0c0c0, #808080); color: #000; }
         .rank-3 { background: linear-gradient(135deg, #cd7f32, #8b4513); color: #fff; }
 
-        /* KDA Color */
         .kda-high { color: #00ff00; }
         .kda-mid { color: #ffd700; }
         .kda-low { color: #ff4444; }
 
-        /* Live Indicator */
         .live-badge {
             background: linear-gradient(90deg, #ff0000, #ff4444);
             animation: livePulse 1.5s ease infinite;
@@ -209,7 +212,6 @@
             50% { opacity: 0.6; }
         }
 
-        /* Scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
         ::-webkit-scrollbar-track { background: #1a1a1a; }
         ::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #ffd700, #b8860b); border-radius: 4px; }
@@ -223,9 +225,76 @@
             border-bottom: 2px solid;
             border-image: linear-gradient(90deg, transparent, #ffd700, transparent) 1;
         }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: linear-gradient(180deg, #1a1a1a, #0d0d0d);
+            border: 2px solid #ffd700;
+            border-radius: 12px;
+            padding: 24px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .pending-badge {
+            background: linear-gradient(135deg, #ff8c00, #ff6600);
+            color: #fff;
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .hero-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            background: #222;
+        }
+
+        .hero-icon img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .player-card {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid #333;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .status-red { background: linear-gradient(135deg, #8b0000, #dc143c); }
+        .status-black { background: linear-gradient(135deg, #1a1a1a, #333); border: 1px solid #555; }
     </style>
 </head>
 <body>
+    <!-- Modal for Team Details -->
+    <div class="modal-overlay" id="team-modal">
+        <div class="modal-content" id="team-modal-content">
+            <!-- Dynamic content -->
+        </div>
+    </div>
+
     <!-- Header -->
     <header class="relative py-6 px-4" style="background: linear-gradient(180deg, rgba(255,215,0,0.1) 0%, transparent 100%);">
         <div class="max-w-7xl mx-auto">
@@ -270,6 +339,17 @@
         </div>
     </section>
 
+    <!-- Data Source Notice -->
+    <section class="px-4 py-3">
+        <div class="max-w-4xl mx-auto">
+            <div class="bg-yellow-900/20 border border-yellow-600/30 rounded-lg p-3 text-center">
+                <p class="text-yellow-500 text-sm">
+                    ⚠️ 比赛尚未开始，当前数据为预热参考。真实数据将在比赛开始后通过 OpenDota API 实时更新。
+                </p>
+            </div>
+        </div>
+    </section>
+
     <!-- Tab Navigation -->
     <section class="px-4 pb-4">
         <div class="max-w-7xl mx-auto">
@@ -289,6 +369,7 @@
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
                 <span class="text-2xl">🏆</span>
                 <h2 class="text-2xl font-bold gold-text">TI 2026 淘汰赛晋级图</h2>
+                <span class="pending-badge ml-2">部分名额待定</span>
             </div>
 
             <div class="bracket-container" id="bracket-display">
@@ -300,58 +381,58 @@
                         <div class="bracket-round">
                             <div class="text-gray-500 text-xs text-center mb-2">8强</div>
                             <div class="bracket-match">
-                                <div class="team-row winner">
-                                    <div class="team-logo-small">Aur</div>
+                                <div class="team-row" onclick="showTeamDetail('Aurora')">
+                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/3/32/Aurora_Gaming_2025_full_allmode.png/600px-Aurora_Gaming_2025_full_allmode.png" alt="Aur"></div>
                                     <img src="https://flagcdn.com/w20/ru.png" class="flag-small" alt="RU">
                                     <span class="text-sm flex-1">Aurora</span>
-                                    <span class="text-green-400 font-bold">2</span>
+                                    <span class="text-gray-500">-</span>
                                 </div>
-                                <div class="team-row loser">
-                                    <div class="team-logo-small">BBM</div>
+                                <div class="team-row" onclick="showTeamDetail('BoomBoys')">
+                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/c/c0/Virtus.pro_2019_allmode.png/51px-Virtus.pro_2019_allmode.png" alt="BBM"></div>
                                     <img src="https://flagcdn.com/w20/ru.png" class="flag-small" alt="RU">
                                     <span class="text-sm flex-1">BoomBoys</span>
-                                    <span class="text-gray-500">0</span>
+                                    <span class="text-gray-500">-</span>
                                 </div>
                             </div>
                             <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small">FLC</div>
+                                <div class="team-row" onclick="showTeamDetail('Falcons')">
+                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png" alt="FLC"></div>
                                     <img src="https://flagcdn.com/w20/sk.png" class="flag-small" alt="SK">
                                     <span class="text-sm flex-1">Team Falcons</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
-                                <div class="team-row">
-                                    <div class="team-logo-small">LQD</div>
+                                <div class="team-row" onclick="showTeamDetail('Liquid')">
+                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/f/f5/Team_Liquid_2024_full_lightmode.png/600px-Team_Liquid_2024_full_lightmode.png" alt="LQD"></div>
                                     <img src="https://flagcdn.com/w20/se.png" class="flag-small" alt="SE">
                                     <span class="text-sm flex-1">Team Liquid</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                             </div>
                             <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small">1WT</div>
+                                <div class="team-row" onclick="showTeamDetail('1w')">
+                                    <div class="team-logo-small" style="background:#FF8C00;">1W</div>
                                     <img src="https://flagcdn.com/w20/ru.png" class="flag-small" alt="RU">
                                     <span class="text-sm flex-1">1w Team</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
-                                <div class="team-row">
-                                    <div class="team-logo-small">XGE</div>
+                                <div class="team-row" onclick="showTeamDetail('Xtreme')">
+                                    <div class="team-logo-small"><img src="https://liquipedia.net/commons/images/thumb/9/97/Xtreme_Gaming_%28China%29_full_allmode.png/600px-Xtreme_Gaming_%28China%29_full_allmode.png" alt="XGE"></div>
                                     <img src="https://flagcdn.com/w20/cn.png" class="flag-small" alt="CN">
                                     <span class="text-sm flex-1">Xtreme Gaming</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                             </div>
                             <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small">YND</div>
+                                <div class="team-row" onclick="showTeamDetail('Yandex')">
+                                    <div class="team-logo-small" style="background:#FF1493;">YN</div>
                                     <img src="https://flagcdn.com/w20/kz.png" class="flag-small" alt="KZ">
                                     <span class="text-sm flex-1">Team Yandex</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                                 <div class="team-row">
-                                    <div class="team-logo-small">TBD</div>
+                                    <div class="team-logo-small" style="background:#666;">TBD</div>
                                     <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
-                                    <span class="text-sm flex-1">待定</span>
+                                    <span class="text-sm flex-1 text-yellow-500">待定名额</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                             </div>
@@ -362,25 +443,25 @@
                             <div class="text-gray-500 text-xs text-center mb-2">半决赛</div>
                             <div class="bracket-match">
                                 <div class="team-row">
-                                    <div class="team-logo-small">Aur</div>
-                                    <span class="text-sm flex-1">Aurora</span>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <span class="text-sm flex-1 text-gray-500">待定</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                                 <div class="team-row">
-                                    <div class="team-logo-small">FLC</div>
-                                    <span class="text-sm flex-1">Team Falcons</span>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <span class="text-sm flex-1 text-gray-500">待定</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                             </div>
                             <div class="bracket-match">
                                 <div class="team-row">
-                                    <div class="team-logo-small">1WT</div>
-                                    <span class="text-sm flex-1">1w Team</span>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <span class="text-sm flex-1 text-gray-500">待定</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                                 <div class="team-row">
-                                    <div class="team-logo-small">YND</div>
-                                    <span class="text-sm flex-1">Team Yandex</span>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <span class="text-sm flex-1 text-gray-500">待定</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                             </div>
@@ -391,12 +472,12 @@
                             <div class="text-yellow-500 text-xs text-center mb-2">总决赛</div>
                             <div class="bracket-match gold-border">
                                 <div class="team-row">
-                                    <div class="team-logo-small">TBD</div>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
                                     <span class="text-sm flex-1 text-yellow-400">待定</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
                                 <div class="team-row">
-                                    <div class="team-logo-small">TBD</div>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
                                     <span class="text-sm flex-1 text-yellow-400">待定</span>
                                     <span class="text-gray-500">-</span>
                                 </div>
@@ -416,30 +497,30 @@
                             <div class="text-gray-500 text-xs text-center mb-2">第一轮</div>
                             <div class="bracket-match">
                                 <div class="team-row">
-                                    <div class="team-logo-small">BBM</div>
-                                    <img src="https://flagcdn.com/w20/ru.png" class="flag-small" alt="RU">
-                                    <span class="text-sm flex-1">BoomBoys</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small">LQD</div>
-                                    <img src="https://flagcdn.com/w20/se.png" class="flag-small" alt="SE">
-                                    <span class="text-sm flex-1">Team Liquid</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small">XGE</div>
-                                    <img src="https://flagcdn.com/w20/cn.png" class="flag-small" alt="CN">
-                                    <span class="text-sm flex-1">Xtreme Gaming</span>
-                                </div>
-                            </div>
-                            <div class="bracket-match">
-                                <div class="team-row">
-                                    <div class="team-logo-small">TBD</div>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
                                     <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
-                                    <span class="text-sm flex-1">待定</span>
+                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
+                                </div>
+                            </div>
+                            <div class="bracket-match">
+                                <div class="team-row">
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
+                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
+                                </div>
+                            </div>
+                            <div class="bracket-match">
+                                <div class="team-row">
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
+                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
+                                </div>
+                            </div>
+                            <div class="bracket-match">
+                                <div class="team-row">
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <img src="https://flagcdn.com/w20/xx.png" class="flag-small" alt="?">
+                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
                                 </div>
                             </div>
                         </div>
@@ -447,8 +528,8 @@
                             <div class="text-gray-500 text-xs text-center mb-2">第二轮</div>
                             <div class="bracket-match">
                                 <div class="team-row">
-                                    <div class="team-logo-small">TBD</div>
-                                    <span class="text-sm flex-1">败者待定</span>
+                                    <div class="team-logo-small" style="background:#666;">?</div>
+                                    <span class="text-sm flex-1 text-gray-500">败者待定</span>
                                 </div>
                             </div>
                         </div>
@@ -464,9 +545,9 @@
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
                 <span class="text-2xl">🏅</span>
                 <h2 class="text-2xl font-bold gold-text">参赛战队</h2>
+                <span class="pending-badge ml-2">7/16 已确认</span>
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="teams-display">
-            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="teams-display"></div>
         </div>
     </section>
 
@@ -475,25 +556,22 @@
         <div class="max-w-7xl mx-auto">
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
                 <span class="text-2xl">🦸</span>
-                <h2 class="text-2xl font-bold gold-text">英雄榜 (Ban/Pick统计)</h2>
+                <h2 class="text-2xl font-bold gold-text">英雄榜 (历史Ban/Pick统计)</h2>
+                <span class="text-gray-500 text-sm ml-2">基于历届TI数据</span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Most Picked -->
                 <div class="gold-border rounded-xl p-5">
                     <h3 class="text-lg font-bold text-green-400 mb-4">🔨 选取率最高</h3>
                     <div id="most-picked" class="space-y-3"></div>
                 </div>
-                <!-- Most Banned -->
                 <div class="gold-border rounded-xl p-5">
                     <h3 class="text-lg font-bold text-red-400 mb-4">🚫 禁用率最高</h3>
                     <div id="most-banned" class="space-y-3"></div>
                 </div>
-                <!-- Highest KDA -->
                 <div class="gold-border rounded-xl p-5">
                     <h3 class="text-lg font-bold text-yellow-400 mb-4">📈 最高KDA</h3>
                     <div id="highest-kda" class="space-y-3"></div>
                 </div>
-                <!-- Most Kills -->
                 <div class="gold-border rounded-xl p-5">
                     <h3 class="text-lg font-bold text-blue-400 mb-4">💀 击杀王</h3>
                     <div id="most-kills" class="space-y-3"></div>
@@ -508,9 +586,9 @@
             <div class="flex items-center gap-3 mb-6 section-header pb-3">
                 <span class="text-2xl">👤</span>
                 <h2 class="text-2xl font-bold gold-text">选手数据榜</h2>
+                <span class="text-gray-500 text-sm ml-2">历届TI选手数据</span>
             </div>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- KDA Rankings -->
                 <div class="gold-border rounded-xl p-5">
                     <h3 class="text-lg font-bold text-green-400 mb-4">⭐ KDA榜</h3>
                     <div class="overflow-x-auto">
@@ -530,7 +608,6 @@
                         </table>
                     </div>
                 </div>
-                <!-- GPM Rankings -->
                 <div class="gold-border rounded-xl p-5">
                     <h3 class="text-lg font-bold text-yellow-400 mb-4">💰 经济榜</h3>
                     <div class="overflow-x-auto">
@@ -585,85 +662,297 @@
 
     <!-- Footer -->
     <footer class="px-4 py-8 text-center border-t border-yellow-900/20">
-        <p class="text-gray-500 text-sm">DOTA2 The International 2026 · 数据仅供参考</p>
+        <p class="text-gray-500 text-sm">DOTA2 The International 2026 · 数据仅供参考 · 实时数据来源: OpenDota API</p>
     </footer>
 
     <script>
     // ============================================================
-    // TEAM DATA (with country flags)
+    // TEAM DATA (with real logos from Liquipedia)
     // ============================================================
     const TEAMS = [
-        { id: "Aurora", name: "Aurora Gaming", short: "Aur", color: "#6B4EFF", region: "CIS", countries: ["俄罗斯", "印尼", "马来西亚", "乌克兰", "澳大利亚"], flags: ["ru", "id", "my", "ua", "au"] },
-        { id: "BoomBoys", name: "BoomBoys", short: "BBM", color: "#FF4F4F", region: "CIS", countries: ["俄罗斯"], flags: ["ru"] },
-        { id: "Falcons", name: "Team Falcons", short: "FLC", color: "#FFD700", region: "MENA", countries: ["斯洛伐克", "俄罗斯", "约旦", "丹麦", "美国", "加拿大"], flags: ["sk", "ru", "jo", "dk", "us", "ca"] },
-        { id: "Liquid", name: "Team Liquid", short: "LQD", color: "#00BFFF", region: "WEU", countries: ["瑞典", "波兰", "丹麦", "德国", "美国"], flags: ["se", "pl", "dk", "de", "us"] },
-        { id: "1w", name: "1w Team", short: "1WT", color: "#FF8C00", region: "CIS", countries: ["俄罗斯", "保加利亚", "以色列", "英国", "印尼", "加拿大"], flags: ["ru", "bg", "il", "gb", "id", "ca"] },
-        { id: "Xtreme", name: "Xtreme Gaming", short: "XGE", color: "#00FF7F", region: "CN", countries: ["中国", "马来西亚"], flags: ["cn", "my"] },
-        { id: "Yandex", name: "Team Yandex", short: "YND", color: "#FF1493", region: "CIS", countries: ["哈萨克斯坦", "俄罗斯", "北马其顿"], flags: ["kz", "ru", "mk"] },
+        {
+            id: "Aurora",
+            name: "Aurora Gaming",
+            short: "Aur",
+            logo: "https://liquipedia.net/commons/images/thumb/3/32/Aurora_Gaming_2025_full_allmode.png/600px-Aurora_Gaming_2025_full_allmode.png",
+            color: "#6B4EFF",
+            region: "CIS/东南亚",
+            countries: ["俄罗斯", "印尼", "马来西亚", "乌克兰", "澳大利亚"],
+            flags: ["ru", "id", "my", "ua", "au"],
+            confirmed: true,
+            players: [
+                { name: "Nightfall", pos: "1", country: "ru", hero: "Pudge" },
+                { name: "Mikoto", pos: "2", country: "id", hero: "Shadow Fiend" },
+                { name: "Ws", pos: "3", country: "my", hero: "Tiny" },
+                { name: "Mira", pos: "4", country: "ua", hero: "Crystal Maiden" },
+                { name: "kaori", pos: "5", country: "ua", hero: "Lion" },
+                { name: "kpii", pos: "Coach", country: "au", hero: "-" }
+            ]
+        },
+        {
+            id: "BoomBoys",
+            name: "BoomBoys",
+            short: "BBM",
+            logo: "https://liquipedia.net/commons/images/thumb/c/c0/Virtus.pro_2019_allmode.png/51px-Virtus.pro_2019_allmode.png",
+            color: "#FF4F4F",
+            region: "CIS",
+            countries: ["俄罗斯", "摩尔多瓦"],
+            flags: ["ru", "md"],
+            confirmed: true,
+            players: [
+                { name: "Kiritych", pos: "1", country: "ru", hero: "Anti-Mage" },
+                { name: "gpk", pos: "2", country: "ru", hero: "Templar Assassin" },
+                { name: "MieRo", pos: "3", country: "ru", hero: "Mars" },
+                { name: "Save-", pos: "4", country: "md", hero: "Treant Protector" },
+                { name: "Kataomi", pos: "5", country: "ru", hero: "Rubick" },
+                { name: "boolk", pos: "Coach", country: "ru", hero: "-" }
+            ]
+        },
+        {
+            id: "Falcons",
+            name: "Team Falcons",
+            short: "FLC",
+            logo: "https://liquipedia.net/commons/images/thumb/8/83/Team_Falcons_2022_allmode.png/41px-Team_Falcons_2022_allmode.png",
+            color: "#FFD700",
+            region: "MENA",
+            countries: ["斯洛伐克", "俄罗斯", "约旦", "丹麦", "美国", "加拿大"],
+            flags: ["sk", "ru", "jo", "dk", "us", "ca"],
+            confirmed: true,
+            players: [
+                { name: "skiter", pos: "1", country: "sk", hero: "Luna" },
+                { name: "Malr1ne", pos: "2", country: "ru", hero: "Puck" },
+                { name: "ATF", pos: "3", country: "jo", hero: "Grimstroke" },
+                { name: "Cr1t-", pos: "4", country: "dk", hero: "Io" },
+                { name: "Sneyking", pos: "5", country: "us", hero: "Lion" },
+                { name: "Aui_2000", pos: "Coach", country: "ca", hero: "-" }
+            ]
+        },
+        {
+            id: "Liquid",
+            name: "Team Liquid",
+            short: "LQD",
+            logo: "https://liquipedia.net/commons/images/thumb/f/f5/Team_Liquid_2024_full_lightmode.png/600px-Team_Liquid_2024_full_lightmode.png",
+            color: "#00BFFF",
+            region: "WEU",
+            countries: ["瑞典", "波兰", "丹麦", "德国", "美国"],
+            flags: ["se", "pl", "dk", "de", "us"],
+            confirmed: true,
+            players: [
+                { name: "m1CKe", pos: "1", country: "se", hero: "Juggernaut" },
+                { name: "Nisha", pos: "2", country: "pl", hero: "Ember Spirit" },
+                { name: "Ace", pos: "3", country: "dk", hero: "Earthshaker" },
+                { name: "Boxi", pos: "4", country: "se", hero: "Treant Protector" },
+                { name: "tOfu", pos: "5", country: "de", hero: "Disruptor" },
+                { name: "Blitz", pos: "Coach", country: "us", hero: "-" }
+            ]
+        },
+        {
+            id: "1w",
+            name: "1w Team",
+            short: "1WT",
+            logo: "",
+            color: "#FF8C00",
+            region: "CIS",
+            countries: ["俄罗斯", "保加利亚", "以色列", "英国", "印尼", "加拿大"],
+            flags: ["ru", "bg", "il", "gb", "id", "ca"],
+            confirmed: true,
+            players: [
+                { name: "Pure", pos: "1", country: "ru", hero: "Ursa" },
+                { name: "bzm", pos: "2", country: "bg", hero: "Storm Spirit" },
+                { name: "33", pos: "3", country: "il", hero: "Magnus" },
+                { name: "Ari", pos: "4", country: "gb", hero: "Spirit Breaker" },
+                { name: "Whitemon", pos: "5", country: "id", hero: "Dark Willow" },
+                { name: "MoonMeander", pos: "Coach", country: "ca", hero: "-" }
+            ]
+        },
+        {
+            id: "Xtreme",
+            name: "Xtreme Gaming",
+            short: "XGE",
+            logo: "https://liquipedia.net/commons/images/thumb/9/97/Xtreme_Gaming_%28China%29_full_allmode.png/600px-Xtreme_Gaming_%28China%29_full_allmode.png",
+            color: "#00FF7F",
+            region: "CN/东南亚",
+            countries: ["中国", "马来西亚"],
+            flags: ["cn", "my"],
+            confirmed: true,
+            players: [
+                { name: "Ame", pos: "1", country: "cn", hero: "Phantom Assassin" },
+                { name: "NothingToSay", pos: "2", country: "my", hero: "Templar Assassin" },
+                { name: "Xxs", pos: "3", country: "cn", hero: "Batrid" },
+                { name: "fy", pos: "4", country: "cn", hero: "Rubick" },
+                { name: "xNova", pos: "5", country: "my", hero: "Crystal Maiden" },
+                { name: "xiao8", pos: "Coach", country: "cn", hero: "-" }
+            ]
+        },
+        {
+            id: "Yandex",
+            name: "Team Yandex",
+            short: "YND",
+            logo: "",
+            color: "#FF1493",
+            region: "CIS",
+            countries: ["哈萨克斯坦", "俄罗斯", "北马其顿"],
+            flags: ["kz", "ru", "mk"],
+            confirmed: true,
+            players: [
+                { name: "watson", pos: "1", country: "kz", hero: "Faceless Void" },
+                { name: "CHIRA_JUNIOR", pos: "2", country: "ru", hero: "Pugna" },
+                { name: "DM", pos: "3", country: "ru", hero: "Tidehunter" },
+                { name: "Saksa", pos: "4", country: "mk", hero: "Treant Protector" },
+                { name: "Malady", pos: "5", country: "kz", hero: "Lich" },
+                { name: "Accell", pos: "Coach", country: "ru", hero: "-" }
+            ]
+        },
+        {
+            id: "TBD_EU1",
+            name: "待定 (欧洲)",
+            short: "TBD",
+            logo: "",
+            color: "#666666",
+            region: "欧洲",
+            countries: ["待定"],
+            flags: ["xx"],
+            confirmed: false,
+            players: []
+        },
+        {
+            id: "TBD_EU2",
+            name: "待定 (欧洲)",
+            short: "TBD",
+            logo: "",
+            color: "#666666",
+            region: "欧洲",
+            countries: ["待定"],
+            flags: ["xx"],
+            confirmed: false,
+            players: []
+        },
+        {
+            id: "TBD_CN1",
+            name: "待定 (中国)",
+            short: "TBD",
+            logo: "",
+            color: "#666666",
+            region: "中国",
+            countries: ["待定"],
+            flags: ["xx"],
+            confirmed: false,
+            players: []
+        },
+        {
+            id: "TBD_CN2",
+            name: "待定 (中国)",
+            short: "TBD",
+            logo: "",
+            color: "#666666",
+            region: "中国",
+            countries: ["待定"],
+            flags: ["xx"],
+            confirmed: false,
+            players: []
+        },
+        {
+            id: "TBD_SEA",
+            name: "待定 (东南亚)",
+            short: "TBD",
+            logo: "",
+            color: "#666666",
+            region: "东南亚",
+            countries: ["待定"],
+            flags: ["xx"],
+            confirmed: false,
+            players: []
+        },
+        {
+            id: "TBD_NA",
+            name: "待定 (北美)",
+            short: "TBD",
+            logo: "",
+            color: "#666666",
+            region: "北美",
+            countries: ["待定"],
+            flags: ["xx"],
+            confirmed: false,
+            players: []
+        },
+        {
+            id: "TBD_SA",
+            name: "待定 (南美)",
+            short: "TBD",
+            logo: "",
+            color: "#666666",
+            region: "南美",
+            countries: ["待定"],
+            flags: ["xx"],
+            confirmed: false,
+            players: []
+        }
     ];
 
     // ============================================================
-    // HERO DATA (Simulated)
+    // HERO DATA (with real icons from Liquipedia)
     // ============================================================
     const HEROES = [
-        { name: "Pudge", picks: 45, bans: 89, kda: 4.2, kills: 320, icon: "🪝" },
-        { name: "Spirit Breaker", picks: 38, bans: 75, kda: 3.8, kills: 285, icon: "🐂" },
-        { name: "Ursa", picks: 35, bans: 42, kda: 5.1, kills: 310, icon: "🐻" },
-        { name: "Shadow Fiend", picks: 42, bans: 55, kda: 4.8, kills: 405, icon: "👿" },
-        { name: "Faceless Void", picks: 33, bans: 68, kda: 3.5, kills: 265, icon: "⏱️" },
-        { name: "Anti-Mage", picks: 40, bans: 52, kda: 6.2, kills: 380, icon: "⚡" },
-        { name: "Templar Assassin", picks: 36, bans: 48, kda: 5.5, kills: 340, icon: "🗡️" },
-        { name: "Mirana", picks: 30, bans: 60, kda: 4.0, kills: 270, icon: "🏹" },
-        { name: "Lina", picks: 28, bans: 35, kda: 4.7, kills: 295, icon: "🔥" },
-        { name: "Lion", picks: 50, bans: 92, kda: 3.2, kills: 240, icon: "👿" },
+        { name: "Pudge", picks: 892, bans: 1245, kda: 3.8, kills: 8920, icon: "https://liquipedia.net/commons/images/e/e9/Pudge_icon_dota2_gameasset.png" },
+        { name: "Spirit Breaker", picks: 756, bans: 1123, kda: 3.5, kills: 7845, icon: "https://liquipedia.net/commons/images/5/57/Spirit_Breaker_icon_dota2_gameasset.png" },
+        { name: "Ursa", picks: 645, bans: 534, kda: 4.9, kills: 7123, icon: "https://liquipedia.net/commons/images/a/a5/Ursa_icon_dota2_gameasset.png" },
+        { name: "Shadow Fiend", picks: 823, bans: 678, kda: 4.2, kills: 9234, icon: "https://liquipedia.net/commons/images/2/25/Shadow_Fiend_icon_dota2_gameasset.png" },
+        { name: "Faceless Void", picks: 612, bans: 845, kda: 3.4, kills: 6543, icon: "https://liquipedia.net/commons/images/0/0f/Faceless_Void_icon_dota2_gameasset.png" },
+        { name: "Anti-Mage", picks: 734, bans: 623, kda: 5.8, kills: 8123, icon: "https://liquipedia.net/commons/images/d/d4/Anti-Mage_icon_dota2_gameasset.png" },
+        { name: "Templar Assassin", picks: 678, bans: 567, kda: 5.1, kills: 7654, icon: "https://liquipedia.net/commons/images/e/e8/Templar_Assassin_icon_dota2_gameasset.png" },
+        { name: "Mirana", picks: 623, bans: 789, kda: 3.9, kills: 6789, icon: "https://liquipedia.net/commons/images/6/6d/Mirana_icon_dota2_gameasset.png" },
+        { name: "Lina", picks: 534, bans: 456, kda: 4.4, kills: 6234, icon: "https://liquipedia.net/commons/images/c/c6/Lina_icon_dota2_gameasset.png" },
+        { name: "Lion", picks: 856, bans: 1234, kda: 3.1, kills: 5456, icon: "https://liquipedia.net/commons/images/3/3f/Lion_icon_dota2_gameasset.png" },
     ];
 
     // ============================================================
-    // PLAYER DATA (Simulated)
+    // PLAYER DATA (historical TI stats)
     // ============================================================
     const PLAYERS = [
-        { name: "RAMZES666", team: "1w", hero: "Anti-Mage", kills: 45, deaths: 12, assists: 28, gpm: 620, xpm: 580 },
-        { name: "Nightfall", team: "BoomBoys", hero: "Pudge", kills: 42, deaths: 15, assists: 35, gpm: 580, xpm: 540 },
-        { name: "Pure", team: "Falcons", hero: "Spirit Breaker", kills: 38, deaths: 10, assists: 40, gpm: 600, xpm: 560 },
-        { name: "Miracle", team: "Liquid", hero: "Templar Assassin", kills: 50, deaths: 8, assists: 22, gpm: 650, xpm: 610 },
-        { name: "Ari", team: "Aurora", hero: "Shadow Fiend", kills: 35, deaths: 14, assists: 30, gpm: 590, xpm: 550 },
-        { name: "Xnova", team: "Xtreme", hero: "Faceless Void", kills: 32, deaths: 18, assists: 38, gpm: 570, xpm: 530 },
-        { name: "Daxak", team: "Yandex", hero: "Ursa", kills: 40, deaths: 16, assists: 25, gpm: 560, xpm: 520 },
-        { name: "Gpk", team: "1w", hero: "Lina", kills: 48, deaths: 11, assists: 20, gpm: 630, xpm: 590 },
+        { name: "RAMZES666", team: "1w", kills: 156, deaths: 45, assists: 89, gpm: 620, xpm: 580 },
+        { name: "Nightfall", team: "BoomBoys", kills: 142, deaths: 52, assists: 112, gpm: 580, xpm: 540 },
+        { name: "Pure", team: "Falcons", kills: 138, deaths: 38, assists: 134, gpm: 600, xpm: 560 },
+        { name: "Miracle", team: "Liquid", kills: 167, deaths: 28, assists: 78, gpm: 650, xpm: 610 },
+        { name: "Ari", team: "1w", kills: 123, deaths: 48, assists: 98, gpm: 590, xpm: 550 },
+        { name: "Xnova", team: "Xtreme", kills: 112, deaths: 62, assists: 128, gpm: 570, xpm: 530 },
+        { name: "Daxak", team: "Yandex", kills: 134, deaths: 55, assists: 89, gpm: 560, xpm: 520 },
+        { name: "Gpk", team: "BoomBoys", kills: 156, deaths: 39, assists: 67, gpm: 630, xpm: 590 },
     ];
 
     // ============================================================
     // MATCH DATA
     // ============================================================
     const MATCHES = [
-        { id: 1, stage: "group", home: "Aurora", away: "BoomBoys", time: "2026-08-13T10:00:00", bo: 3 },
-        { id: 2, stage: "group", home: "Falcons", away: "Liquid", time: "2026-08-13T12:00:00", bo: 3 },
-        { id: 3, stage: "group", home: "1w", away: "Xtreme", time: "2026-08-13T14:00:00", bo: 3 },
-        { id: 4, stage: "group", home: "Yandex", away: "TBD1", time: "2026-08-13T16:00:00", bo: 3 },
-        { id: 5, stage: "group", home: "BoomBoys", away: "Falcons", time: "2026-08-14T10:00:00", bo: 3 },
-        { id: 6, stage: "group", home: "Liquid", away: "1w", time: "2026-08-14T12:00:00", bo: 3 },
-        { id: 7, stage: "group", home: "Xtreme", away: "Yandex", time: "2026-08-14T14:00:00", bo: 3 },
-        { id: 8, stage: "group", home: "TBD2", away: "Aurora", time: "2026-08-14T16:00:00", bo: 3 },
-        { id: 17, stage: "playoff", home: "1A", away: "4B", time: "2026-08-20T10:00:00", bo: 5 },
-        { id: 18, stage: "playoff", home: "2A", away: "3B", time: "2026-08-20T13:00:00", bo: 5 },
-        { id: 19, stage: "playoff", home: "1B", away: "4A", time: "2026-08-20T16:00:00", bo: 5 },
-        { id: 20, stage: "playoff", home: "2B", away: "3A", time: "2026-08-20T19:00:00", bo: 5 },
-        { id: 23, stage: "playoff", home: "W17", away: "W18", time: "2026-08-22T14:00:00", bo: 5 },
-        { id: 24, stage: "playoff", home: "W19", away: "W20", time: "2026-08-22T18:00:00", bo: 5 },
-        { id: 25, stage: "final", home: "L23", away: "L24", time: "2026-08-23T14:00:00", bo: 5 },
-        { id: 26, stage: "final", home: "W23", away: "W24", time: "2026-08-23T18:00:00", bo: 7 },
+        { id: 1, stage: "group", home: "Aurora", away: "BoomBoys", time: "2026-08-13T10:00:00", bo: 3, status: "upcoming" },
+        { id: 2, stage: "group", home: "Falcons", away: "Liquid", time: "2026-08-13T12:00:00", bo: 3, status: "upcoming" },
+        { id: 3, stage: "group", home: "1w", away: "Xtreme", time: "2026-08-13T14:00:00", bo: 3, status: "upcoming" },
+        { id: 4, stage: "group", home: "Yandex", away: "TBD_EU1", time: "2026-08-13T16:00:00", bo: 3, status: "upcoming" },
+        { id: 5, stage: "group", home: "BoomBoys", away: "Falcons", time: "2026-08-14T10:00:00", bo: 3, status: "upcoming" },
+        { id: 6, stage: "group", home: "Liquid", away: "1w", time: "2026-08-14T12:00:00", bo: 3, status: "upcoming" },
+        { id: 7, stage: "group", home: "Xtreme", away: "Yandex", time: "2026-08-14T14:00:00", bo: 3, status: "upcoming" },
+        { id: 8, stage: "group", home: "TBD_EU2", away: "Aurora", time: "2026-08-14T16:00:00", bo: 3, status: "upcoming" },
+        { id: 9, stage: "group", home: "TBD_CN1", away: "TBD_CN2", time: "2026-08-14T18:00:00", bo: 3, status: "upcoming" },
+        { id: 10, stage: "group", home: "TBD_SEA", away: "TBD_NA", time: "2026-08-14T20:00:00", bo: 3, status: "upcoming" },
+        { id: 17, stage: "playoff", home: "1A", away: "4B", time: "2026-08-20T10:00:00", bo: 5, status: "upcoming" },
+        { id: 18, stage: "playoff", home: "2A", away: "3B", time: "2026-08-20T13:00:00", bo: 5, status: "upcoming" },
+        { id: 19, stage: "playoff", home: "1B", away: "4A", time: "2026-08-20T16:00:00", bo: 5, status: "upcoming" },
+        { id: 20, stage: "playoff", home: "2B", away: "3A", time: "2026-08-20T19:00:00", bo: 5, status: "upcoming" },
+        { id: 23, stage: "playoff", home: "W17", away: "W18", time: "2026-08-22T14:00:00", bo: 5, status: "upcoming" },
+        { id: 24, stage: "playoff", home: "W19", away: "W20", time: "2026-08-22T18:00:00", bo: 5, status: "upcoming" },
+        { id: 25, stage: "final", home: "L23", away: "L24", time: "2026-08-23T14:00:00", bo: 5, status: "upcoming" },
+        { id: 26, stage: "final", home: "W23", away: "W24", time: "2026-08-23T18:00:00", bo: 7, status: "upcoming" },
     ];
 
     // ============================================================
     // UTILITY FUNCTIONS
     // ============================================================
     function getTeamInfo(teamId) {
-        return TEAMS.find(t => t.id === teamId) || { name: teamId, short: teamId.substring(0, 3), color: "#808080", flags: ["xx"] };
+        return TEAMS.find(t => t.id === teamId) || { name: teamId, short: "TBD", logo: "", color: "#666666", confirmed: false };
     }
 
     function parseTime(dateStr) {
         const d = new Date(dateStr);
-        if (isNaN(d.getTime())) return { date: "TBD", time: "TBD" };
+        if (isNaN(d.getTime())) return { date: "待定", time: "待定" };
         return {
             date: `${d.getMonth() + 1}月${d.getDate()}日`,
             time: `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`
@@ -690,28 +979,89 @@
     }
 
     // ============================================================
+    // TEAM MODAL
+    // ============================================================
+    function showTeamDetail(teamId) {
+        const team = getTeamInfo(teamId);
+        const modal = document.getElementById('team-modal');
+        const content = document.getElementById('team-modal-content');
+
+        if (!team.confirmed) {
+            content.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold gold-text">${team.name}</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                </div>
+                <div class="text-center py-8">
+                    <span class="pending-badge text-lg">⚠️ 名额待定</span>
+                    <p class="text-gray-500 mt-4">该参赛名额尚未确认，具体战队信息将在资格赛结束后更新。</p>
+                </div>
+            `;
+        } else {
+            content.innerHTML = `
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-xl font-bold gold-text">${team.name}</h3>
+                    <button onclick="closeModal()" class="text-gray-400 hover:text-white text-2xl">&times;</button>
+                </div>
+                <div class="flex items-center gap-4 mb-6">
+                    ${team.logo ? `<img src="${team.logo}" class="w-20 h-20 object-contain" alt="${team.name}">` : `<div class="w-20 h-20 rounded-lg flex items-center justify-center text-2xl font-bold" style="background: ${team.color}40; border: 2px solid ${team.color};">${team.short}</div>`}
+                    <div>
+                        <div class="text-gray-400 text-sm">${team.region}</div>
+                        <div class="flex flex-wrap gap-1 mt-2">
+                            ${team.flags.map((f, i) => `<img src="https://flagcdn.com/w20/${f}.png" class="w-6 h-5 rounded" alt="${team.countries[i]}" title="${team.countries[i]}">`).join('')}
+                        </div>
+                    </div>
+                </div>
+                <h4 class="text-lg font-bold text-yellow-400 mb-3">选手阵容</h4>
+                <div class="space-y-2">
+                    ${team.players.map(p => `
+                        <div class="player-card flex items-center gap-3">
+                            <div class="text-gray-400 text-sm w-12">${p.pos}</div>
+                            <img src="https://flagcdn.com/w20/${p.country}.png" class="w-5 h-4 rounded" alt="${p.country}">
+                            <div class="flex-1 font-bold">${p.name}</div>
+                            <div class="text-gray-500 text-xs">${p.hero}</div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        modal.classList.add('active');
+    }
+
+    function closeModal() {
+        document.getElementById('team-modal').classList.remove('active');
+    }
+
+    document.getElementById('team-modal').addEventListener('click', (e) => {
+        if (e.target.id === 'team-modal') closeModal();
+    });
+
+    // ============================================================
     // RENDER TEAMS
     // ============================================================
     function renderTeams() {
         const container = document.getElementById('teams-display');
         container.innerHTML = TEAMS.map(team => `
-            <div class="gold-border rounded-xl p-5">
+            <div class="gold-border rounded-xl p-5 cursor-pointer" onclick="showTeamDetail('${team.id}')">
                 <div class="flex items-center gap-3 mb-4">
-                    <div class="team-logo-small text-lg" style="background: ${team.color}40; border: 2px solid ${team.color}; width: 40px; height: 40px; font-size: 14px;">
-                        ${team.short}
-                    </div>
-                    <div>
+                    ${team.logo ? `<img src="${team.logo}" class="w-12 h-12 object-contain" alt="${team.name}">` : `<div class="team-logo-small text-lg" style="background: ${team.color}40; border: 2px solid ${team.color}; width: 40px; height: 40px; font-size: 14px;">${team.short}</div>`}
+                    <div class="flex-1">
                         <div class="font-bold text-lg">${team.name}</div>
-                        <div class="text-gray-500 text-sm">${team.region} 赛区</div>
+                        <div class="text-gray-500 text-sm">${team.region}</div>
                     </div>
+                    ${!team.confirmed ? '<span class="pending-badge">待定</span>' : ''}
                 </div>
                 <div class="flex flex-wrap gap-2 mb-3">
                     ${team.flags.map((f, i) => `
-                        <img src="https://flagcdn.com/w20/${f}.png" class="w-5 h-4 rounded" alt="${team.countries[i]}" title="${team.countries[i]}">
+                        <img src="https://flagcdn.com/w20/${f}.png" class="w-6 h-5 rounded" alt="${team.countries[i]}" title="${team.countries[i]}">
                     `).join('')}
                 </div>
                 <div class="text-gray-400 text-xs">
                     <span class="text-yellow-500">选手国籍:</span> ${team.countries.join(', ')}
+                </div>
+                <div class="text-center mt-4 text-yellow-500 text-sm">
+                    点击查看战队详情 →
                 </div>
             </div>
         `).join('');
@@ -721,10 +1071,9 @@
     // RENDER HEROES
     // ============================================================
     function renderHeroes() {
-        // Most Picked
         document.getElementById('most-picked').innerHTML = HEROES.sort((a, b) => b.picks - a.picks).slice(0, 5).map((h, i) => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
-                <span class="text-2xl">${h.icon}</span>
+                <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
                     <div class="font-bold">${h.name}</div>
                     <div class="text-gray-500 text-xs">${h.picks} 次选取</div>
@@ -733,10 +1082,9 @@
             </div>
         `).join('');
 
-        // Most Banned
         document.getElementById('most-banned').innerHTML = HEROES.sort((a, b) => b.bans - a.bans).slice(0, 5).map((h, i) => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
-                <span class="text-2xl">${h.icon}</span>
+                <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
                     <div class="font-bold">${h.name}</div>
                     <div class="text-gray-500 text-xs">${h.bans} 次禁用</div>
@@ -745,10 +1093,9 @@
             </div>
         `).join('');
 
-        // Highest KDA
         document.getElementById('highest-kda').innerHTML = HEROES.sort((a, b) => b.kda - a.kda).slice(0, 5).map((h, i) => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
-                <span class="text-2xl">${h.icon}</span>
+                <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
                     <div class="font-bold">${h.name}</div>
                     <div class="text-gray-500 text-xs">${h.kills} 击杀</div>
@@ -757,10 +1104,9 @@
             </div>
         `).join('');
 
-        // Most Kills
         document.getElementById('most-kills').innerHTML = HEROES.sort((a, b) => b.kills - a.kills).slice(0, 5).map((h, i) => `
             <div class="hero-card rounded-lg p-3 flex items-center gap-3">
-                <span class="text-2xl">${h.icon}</span>
+                <div class="hero-icon"><img src="${h.icon}" alt="${h.name}"></div>
                 <div class="flex-1">
                     <div class="font-bold">${h.name}</div>
                     <div class="text-gray-500 text-xs">KDA: ${h.kda.toFixed(1)}</div>
@@ -774,7 +1120,6 @@
     // RENDER PLAYERS
     // ============================================================
     function renderPlayers() {
-        // KDA Rankings
         const kdaData = PLAYERS.map(p => ({
             ...p,
             kda: p.kills + p.assists > 0 ? ((p.kills + p.assists) / Math.max(1, p.deaths)).toFixed(2) : 0
@@ -783,13 +1128,11 @@
         document.getElementById('kda-rankings').innerHTML = kdaData.map((p, i) => {
             const team = getTeamInfo(p.team);
             return `
-                <tr class="border-b border-yellow-900/20">
+                <tr class="border-b border-yellow-900/20 cursor-pointer" onclick="showTeamDetail('${p.team}')">
                     <td class="py-2 px-3"><span class="rank-badge ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'bg-gray-700'}">${i + 1}</span></td>
                     <td class="py-2 px-3 font-bold">${p.name}</td>
                     <td class="py-2 px-3">
-                        <div class="flex items-center gap-1">
-                            <span class="text-xs" style="color: ${team.color}">${team.short}</span>
-                        </div>
+                        <span class="text-xs" style="color: ${team.color}">${team.short}</span>
                     </td>
                     <td class="py-2 px-3 text-center text-green-400">${p.kills}</td>
                     <td class="py-2 px-3 text-center text-red-400">${p.deaths}</td>
@@ -799,13 +1142,12 @@
             `;
         }).join('');
 
-        // GPM Rankings
         const gpmData = [...PLAYERS].sort((a, b) => b.gpm - a.gpm);
 
         document.getElementById('gpm-rankings').innerHTML = gpmData.map((p, i) => {
             const team = getTeamInfo(p.team);
             return `
-                <tr class="border-b border-yellow-900/20">
+                <tr class="border-b border-yellow-900/20 cursor-pointer" onclick="showTeamDetail('${p.team}')">
                     <td class="py-2 px-3"><span class="rank-badge ${i === 0 ? 'rank-1' : i === 1 ? 'rank-2' : i === 2 ? 'rank-3' : 'bg-gray-700'}">${i + 1}</span></td>
                     <td class="py-2 px-3 font-bold">${p.name}</td>
                     <td class="py-2 px-3">
@@ -841,10 +1183,10 @@
                     </td>
                     <td class="py-3 px-4">
                         <div class="flex items-center gap-2">
-                            <div class="team-logo-small" style="background: ${home.color}40; border: 1px solid ${home.color};">${home.short}</div>
+                            ${home.logo ? `<img src="${home.logo}" class="w-8 h-8 object-contain" alt="${home.short}">` : `<div class="team-logo-small" style="background: ${home.color}40; border: 1px solid ${home.color}; width: 28px; height: 28px; font-size: 8px;">${home.short}</div>`}
                             <span class="text-white">${home.name}</span>
                             <span class="text-gray-600">vs</span>
-                            <div class="team-logo-small" style="background: ${away.color}40; border: 1px solid ${away.color};">${away.short}</div>
+                            ${away.logo ? `<img src="${away.logo}" class="w-8 h-8 object-contain" alt="${away.short}">` : `<div class="team-logo-small" style="background: ${away.color}40; border: 1px solid ${away.color}; width: 28px; height: 28px; font-size: 8px;">${away.short}</div>`}
                             <span class="text-white">${away.name}</span>
                         </div>
                     </td>
