@@ -610,31 +610,37 @@
 
     // ============================================================
     // STATIC FALLBACK DATA (used when API is unavailable)
+    // Times are pre-converted to Beijing time (UTC+8)
+    // Venue timezones: Mexico City UTC-6, New York UTC-5, Los Angeles UTC-8, etc.
     // ============================================================
     const STATIC_MATCHES = [
-        { id: 1, home_team_name_en: "Mexico", away_team_name_en: "South Africa", home_score: 0, away_score: 0, local_date: "06/11/2026 13:00", finished: false, type: "group", ground: "Mexico City Stadium" },
-        { id: 2, home_team_name_en: "Argentina", away_team_name_en: "Japan", home_score: 0, away_score: 0, local_date: "06/11/2026 18:00", finished: false, type: "group", ground: "New York Stadium" },
-        { id: 3, home_team_name_en: "Brazil", away_team_name_en: "North Korea", home_score: 0, away_score: 0, local_date: "06/12/2026 12:00", finished: false, type: "group", ground: "Los Angeles Stadium" },
-        { id: 4, home_team_name_en: "Germany", away_team_name_en: "Algeria", home_score: 0, away_score: 0, local_date: "06/12/2026 18:00", finished: false, type: "group", ground: "Dallas Stadium" },
-        { id: 5, home_team_name_en: "France", away_team_name_en: "Egypt", home_score: 0, away_score: 0, local_date: "06/13/2026 12:00", finished: false, type: "group", ground: "Miami Stadium" },
-        { id: 6, home_team_name_en: "England", away_team_name_en: "Nigeria", home_score: 0, away_score: 0, local_date: "06/13/2026 18:00", finished: false, type: "group", ground: "Kansas City Stadium" },
-        { id: 7, home_team_name_en: "Spain", away_team_name_en: "Jamaica", home_score: 0, away_score: 0, local_date: "06/14/2026 15:00", finished: false, type: "group", ground: "Boston Stadium" },
-        { id: 8, home_team_name_en: "Portugal", away_team_name_en: "Iran", home_score: 0, away_score: 0, local_date: "06/14/2026 18:00", finished: false, type: "group", ground: "Atlanta Stadium" },
-        { id: 23, home_team_name_en: "Brazil", away_team_name_en: "Germany", home_score: 0, away_score: 0, local_date: "06/19/2026 18:00", finished: false, type: "group", ground: "Los Angeles Stadium" },
-        { id: 27, home_team_name_en: "England", away_team_name_en: "Spain", home_score: 0, away_score: 0, local_date: "06/19/2026 18:00", finished: false, type: "group", ground: "Kansas City Stadium" },
-        { id: 29, home_team_name_en: "Portugal", away_team_name_en: "Netherlands", home_score: 0, away_score: 0, local_date: "06/20/2026 18:00", finished: false, type: "group", ground: "Atlanta Stadium" },
-        { id: 33, home_team_name_en: "Belgium", away_team_name_en: "Uruguay", home_score: 0, away_score: 0, local_date: "06/21/2026 18:00", finished: false, type: "group", ground: "New York Stadium" },
-        { id: 42, home_team_name_en: "Germany", away_team_name_en: "North Korea", home_score: 0, away_score: 0, local_date: "06/23/2026 18:00", finished: false, type: "group", ground: "Seattle Stadium" },
-        { id: 48, home_team_name_en: "Netherlands", away_team_name_en: "Iran", home_score: 0, away_score: 0, local_date: "06/24/2026 18:00", finished: false, type: "group", ground: "Houston Stadium" },
-        { id: 55, home_team_name_en: "Denmark", away_team_name_en: "Greece", home_score: 0, away_score: 0, local_date: "06/15/2026 15:00", finished: false, type: "group", ground: "Houston Stadium" },
-        { id: 62, home_team_name_en: "Croatia", away_team_name_en: "Morocco", home_score: 0, away_score: 0, local_date: "06/20/2026 18:00", finished: false, type: "group", ground: "Seattle Stadium" },
-        { id: 103, home_team_name_en: "Winner Group A", away_team_name_en: "Runner-up Group B", home_score: 0, away_score: 0, local_date: "07/10/2026 18:00", finished: false, type: "qf", ground: "New York Stadium" },
-        { id: 104, home_team_name_en: "Winner Group C", away_team_name_en: "Runner-up Group D", home_score: 0, away_score: 0, local_date: "07/10/2026 21:00", finished: false, type: "qf", ground: "Mexico City Stadium" },
-        { id: 106, home_team_name_en: "Winner Group E", away_team_name_en: "Runner-up Group F", home_score: 0, away_score: 0, local_date: "07/12/2026 18:00", finished: false, type: "qf", ground: "Seattle Stadium" },
-        { id: 107, home_team_name_en: "Winner QF 1", away_team_name_en: "Winner QF 2", home_score: 0, away_score: 0, local_date: "07/14/2026 18:00", finished: false, type: "sf", ground: "New York Stadium" },
-        { id: 108, home_team_name_en: "Winner QF 3", away_team_name_en: "Winner QF 4", home_score: 0, away_score: 0, local_date: "07/15/2026 18:00", finished: false, type: "sf", ground: "Mexico City Stadium" },
-        { id: 109, home_team_name_en: "Loser SF 1", away_team_name_en: "Loser SF 2", home_score: 0, away_score: 0, local_date: "07/18/2026 18:00", finished: false, type: "tf", ground: "Miami Stadium" },
-        { id: 110, home_team_name_en: "Winner SF 1", away_team_name_en: "Winner SF 2", home_score: 0, away_score: 0, local_date: "07/19/2026 15:00", finished: false, type: "f", ground: "New York Stadium" },
+        // Correct Beijing times pre-computed:
+        // Mexico City13:00 → Beijing 03:00 next day;18:00 → Beijing 08:00 next day
+        // New York 18:00 → Beijing 07:00 next day; 15:00 → Beijing 04:00 next day
+        // Los Angeles 12:00 → Beijing 04:00 same day; 18:00 → Beijing 10:00 next day
+        { id: 1, home_team_name_en: "Mexico", away_team_name_en: "South Africa", home_score: 0, away_score: 0, local_date: "06/12/2026 03:00", finished: false, type: "group", ground: "Mexico City Stadium" },
+        { id: 2, home_team_name_en: "Argentina", away_team_name_en: "Japan", home_score: 0, away_score: 0, local_date: "06/12/2026 08:00", finished: false, type: "group", ground: "New York Stadium" },
+        { id: 3, home_team_name_en: "Brazil", away_team_name_en: "North Korea", home_score: 0, away_score: 0, local_date: "06/12/2026 04:00", finished: false, type: "group", ground: "Los Angeles Stadium" },
+        { id: 4, home_team_name_en: "Germany", away_team_name_en: "Algeria", home_score: 0, away_score: 0, local_date: "06/13/2026 08:00", finished: false, type: "group", ground: "Dallas Stadium" },
+        { id: 5, home_team_name_en: "France", away_team_name_en: "Egypt", home_score: 0, away_score: 0, local_date: "06/13/2026 07:00", finished: false, type: "group", ground: "Miami Stadium" },
+        { id: 6, home_team_name_en: "England", away_team_name_en: "Nigeria", home_score: 0, away_score: 0, local_date: "06/14/2026 07:00", finished: false, type: "group", ground: "Kansas City Stadium" },
+        { id: 7, home_team_name_en: "Spain", away_team_name_en: "Jamaica", home_score: 0, away_score: 0, local_date: "06/14/2026 04:00", finished: false, type: "group", ground: "Boston Stadium" },
+        { id: 8, home_team_name_en: "Portugal", away_team_name_en: "Iran", home_score: 0, away_score: 0, local_date: "06/15/2026 07:00", finished: false, type: "group", ground: "Atlanta Stadium" },
+        { id: 23, home_team_name_en: "Brazil", away_team_name_en: "Germany", home_score: 0, away_score: 0, local_date: "06/20/2026 10:00", finished: false, type: "group", ground: "Los Angeles Stadium" },
+        { id: 27, home_team_name_en: "England", away_team_name_en: "Spain", home_score: 0, away_score: 0, local_date: "06/20/2026 07:00", finished: false, type: "group", ground: "Kansas City Stadium" },
+        { id: 29, home_team_name_en: "Portugal", away_team_name_en: "Netherlands", home_score: 0, away_score: 0, local_date: "06/21/2026 07:00", finished: false, type: "group", ground: "Atlanta Stadium" },
+        { id: 33, home_team_name_en: "Belgium", away_team_name_en: "Uruguay", home_score: 0, away_score: 0, local_date: "06/22/2026 07:00", finished: false, type: "group", ground: "New York Stadium" },
+        { id: 42, home_team_name_en: "Germany", away_team_name_en: "North Korea", home_score: 0, away_score: 0, local_date: "06/24/2026 10:00", finished: false, type: "group", ground: "Seattle Stadium" },
+        { id: 48, home_team_name_en: "Netherlands", away_team_name_en: "Iran", home_score: 0, away_score: 0, local_date: "06/25/2026 07:00", finished: false, type: "group", ground: "Houston Stadium" },
+        { id: 55, home_team_name_en: "Denmark", away_team_name_en: "Greece", home_score: 0, away_score: 0, local_date: "06/16/2026 07:00", finished: false, type: "group", ground: "Houston Stadium" },
+        { id: 62, home_team_name_en: "Croatia", away_team_name_en: "Morocco", home_score: 0, away_score: 0, local_date: "06/21/2026 10:00", finished: false, type: "group", ground: "Seattle Stadium" },
+        { id: 103, home_team_name_en: "Winner Group A", away_team_name_en: "Runner-up Group B", home_score: 0, away_score: 0, local_date: "07/11/2026 07:00", finished: false, type: "qf", ground: "New York Stadium" },
+        { id: 104, home_team_name_en: "Winner Group C", away_team_name_en: "Runner-up Group D", home_score: 0, away_score: 0, local_date: "07/11/2026 10:00", finished: false, type: "qf", ground: "Mexico City Stadium" },
+        { id: 106, home_team_name_en: "Winner Group E", away_team_name_en: "Runner-up Group F", home_score: 0, away_score: 0, local_date: "07/13/2026 10:00", finished: false, type: "qf", ground: "Seattle Stadium" },
+        { id: 107, home_team_name_en: "Winner QF 1", away_team_name_en: "Winner QF 2", home_score: 0, away_score: 0, local_date: "07/15/2026 07:00", finished: false, type: "sf", ground: "New York Stadium" },
+        { id: 108, home_team_name_en: "Winner QF 3", away_team_name_en: "Winner QF 4", home_score: 0, away_score: 0, local_date: "07/16/2026 03:00", finished: false, type: "sf", ground: "Mexico City Stadium" },
+        { id: 109, home_team_name_en: "Loser SF 1", away_team_name_en: "Loser SF 2", home_score: 0, away_score: 0, local_date: "07/19/2026 07:00", finished: false, type: "tf", ground: "Miami Stadium" },
+        { id: 110, home_team_name_en: "Winner SF 1", away_team_name_en: "Winner SF 2", home_score: 0, away_score: 0, local_date: "07/20/2026 04:00", finished: false, type: "f", ground: "New York Stadium" },
     ];
 
     const STATIC_GROUPS = [
@@ -669,6 +675,7 @@
     function parseBeijingTime(dateStr) {
         if (!dateStr) return { date: "", time: "" };
         // dateStr is in format: "06/11/2026 13:00" (MM/DD/YYYY HH:mm)
+        // This is already Beijing time (pre-computed static data)
         const parts = dateStr.match(/(\d{2})\/(\d{2})\/(\d{4}) (\d{2}):(\d{2})/);
         if (!parts) {
             // Try ISO format
@@ -684,16 +691,40 @@
             };
         }
         const [, month, day, year, hours, minutes] = parts;
-        // Add 8 hours for Beijing time
-        let hour = parseInt(hours) + 8;
-        let dayAdj = parseInt(day);
-        if (hour >= 24) {
-            hour -= 24;
-            dayAdj = parseInt(day) + 1;
-        }
+        // Data is already Beijing time, no conversion needed
         return {
-            date: `${year}年${month}月${String(dayAdj).padStart(2, '0')}日`,
-            time: `${String(hour).padStart(2, '0')}:${minutes}`
+            date: `${year}年${month}月${String(day).padStart(2, '0')}日`,
+            time: `${hours}:${minutes}`
+        };
+    }
+
+    // Parse venue time with timezone offset to get Beijing time
+    function parseVenueToBeijing(venueTimeStr) {
+        if (!venueTimeStr) return { date: "", time: "" };
+        // Format: "2026-06-11T13:00:00-6:00"
+        const match = venueTimeStr.match(/(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2}):(\d{2})([+-]\d{2}):(\d{2})/);
+        if (!match) {
+            // Fallback to simple parsing
+            return parseBeijingTime(venueTimeStr);
+        }
+        const [, year, month, day, hours, minutes, seconds, tzSign, tzHours] = match;
+        const tzOffset = parseInt(tzSign + tzHours); // e.g., -6 for Mexico City
+        const utcHour = parseInt(hours) - tzOffset; // Convert to UTC
+        const beijingHour = parseInt(utcHour) + 8; // UTC+8 for Beijing
+
+        let beijingDay = parseInt(day);
+        let finalHour = beijingHour;
+        if (finalHour >= 24) {
+            finalHour -= 24;
+            beijingDay += 1;
+        } else if (finalHour < 0) {
+            finalHour += 24;
+            beijingDay -= 1;
+        }
+
+        return {
+            date: `${year}年${month}月${String(beijingDay).padStart(2, '0')}日`,
+            time: `${String(finalHour).padStart(2, '0')}:${minutes}`
         };
     }
 
@@ -815,7 +846,8 @@
         container.innerHTML = focusMatches.map(m => {
             const home = getTeamInfo(m.home_team_name_en || m.home_team_name_fa);
             const away = getTeamInfo(m.away_team_name_en || m.away_team_name_fa);
-            const beijing = parseBeijingTime(m.local_date);
+            // Use start_time_venue for API data (with timezone conversion), local_date for static (already Beijing time)
+            const beijing = m.start_time_venue ? parseVenueToBeijing(m.start_time_venue) : parseBeijingTime(m.local_date);
             const state = getMatchState(m.finished, m.time_elapsed);
             const prediction = FOCUS_PREDICTIONS[m.id] || { homeProb: 33, drawProb: 34, awayProb: 33, reason: "等待分析" };
             const isLive = !m.finished && m.time_elapsed;
@@ -1070,7 +1102,8 @@
         tbody.innerHTML = filtered.map(m => {
             const home = getTeamInfo(m.home_team_name_en || m.home_team_name_fa || m.home_team_label);
             const away = getTeamInfo(m.away_team_name_en || m.away_team_name_fa || m.away_team_label);
-            const beijing = parseBeijingTime(m.local_date);
+            // Use start_time_venue for API data, local_date for static (already Beijing time)
+            const beijing = m.start_time_venue ? parseVenueToBeijing(m.start_time_venue) : parseBeijingTime(m.local_date);
             const state = getMatchState(m.finished, m.time_elapsed);
             const isFocus = FOCUS_MATCH_IDS.includes(m.id);
             const isLive = !m.finished && m.time_elapsed;
